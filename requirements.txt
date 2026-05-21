@@ -1,2 +1,2 @@
-composio>=1.0.0rc2
+composio==1.0.0rc2
 python-dotenv>=1.0
