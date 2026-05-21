@@ -1,0 +1,34 @@
+name: leetcode-nag
+
+on:
+  schedule:
+    # 00:00 UTC daily = 7pm EST (standard time) / 8pm EDT (daylight saving).
+    # GitHub Actions cron is UTC-only and doesn't follow DST, so the local time
+    # drifts by an hour twice a year. Edit this line to retune.
+    - cron: "0 0 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  nag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - run: python nag.py
+        env:
+          COMPOSIO_API_KEY: ${{ secrets.COMPOSIO_API_KEY }}
+          COMPOSIO_ENTITY_ID: ${{ secrets.COMPOSIO_ENTITY_ID }}
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+          SHEET_TAB: ${{ secrets.SHEET_TAB }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+          TWILIO_TO_NUMBER: ${{ secrets.TWILIO_TO_NUMBER }}
+          TWILIO_FROM_NUMBER: ${{ secrets.TWILIO_FROM_NUMBER }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
