@@ -1,11 +1,12 @@
 name: leetcode-nag
 
+# GitHub Actions cron is UTC-only and ignores DST. To pin the nag to 7pm
+# America/New_York year-round, we fire at BOTH possible UTC times (one for
+# EDT, one for EST) and a gate step exits early in the wrong season.
 on:
   schedule:
-    # 00:00 UTC daily = 7pm EST (standard time) / 8pm EDT (daylight saving).
-    # GitHub Actions cron is UTC-only and doesn't follow DST, so the local time
-    # drifts by an hour twice a year. Edit this line to retune.
-    - cron: "0 0 * * *"
+    - cron: "0 23 * * *"   # 7pm EDT (Mar–Nov, daylight saving)
+    - cron: "0 0  * * *"   # 7pm EST (Nov–Mar, standard time)
   workflow_dispatch: {}
 
 jobs:
@@ -13,22 +14,43 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Gate on 7pm America/New_York
+        id: gate
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Manual run — skipping time gate."
+            echo "go=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          hour=$(TZ=America/New_York date +%H)
+          if [ "$hour" = "19" ]; then
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Local hour is $hour (not 19) — wrong season for this cron, skipping."
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@v4
+        if: steps.gate.outputs.go == 'true'
 
       - uses: actions/setup-python@v5
+        if: steps.gate.outputs.go == 'true'
         with:
           python-version: "3.11"
           cache: pip
 
       - run: pip install -r requirements.txt
+        if: steps.gate.outputs.go == 'true'
 
       - run: python nag.py
+        if: steps.gate.outputs.go == 'true'
         env:
           COMPOSIO_API_KEY: ${{ secrets.COMPOSIO_API_KEY }}
           COMPOSIO_ENTITY_ID: ${{ secrets.COMPOSIO_ENTITY_ID }}
           SHEET_ID: ${{ secrets.SHEET_ID }}
           SHEET_TAB: ${{ secrets.SHEET_TAB }}
+          SCHEDULE_TAB: ${{ secrets.SCHEDULE_TAB }}
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
-          TWILIO_TO_NUMBER: ${{ secrets.TWILIO_TO_NUMBER }}
-          TWILIO_FROM_NUMBER: ${{ secrets.TWILIO_FROM_NUMBER }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_USER_ID: ${{ secrets.DISCORD_USER_ID }}
