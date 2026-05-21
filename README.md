@@ -1,156 +1,230 @@
 # leetcode-nagger
 
-A daily cron job that reads my Blind 75 tracker + weekly study schedule from
-Google Sheets and yells at me through email (+ optionally Discord) if I'm
-falling behind on cold attempts or spaced-repetition reviews.
+A daily cron job that reads my Blind 75 tracker out of Google Sheets and sends
+me an email + Discord nag at 7pm Eastern if I'm behind on cold attempts or
+spaced-repetition reviews.
 
-- **Source of truth:** one Google Sheet, two tabs.
-  1. **Blind 75 Tracker** — one row per problem with columns `Problem`,
-     `Diff` (or `Difficulty`), `Cold ✓ (date)`, `1wk Review`, `3wk Review`.
-     The bot scans down from the top until it finds the real header row, so
-     dashboard / metadata rows above it are fine.
-  2. **Master Schedule** *(optional)* — one row per study week with columns
-     `Dates` (e.g. `May 20-24` or `June 29-Jul 3`) and `# New` (a number — how
-     many new cold attempts you plan that week). Use this to cap the daily
-     nag: once you've hit the week's `# New` target, the bot stops asking for
-     more new problems.
-- **Read access:** Composio Google Sheets connector (one connection, both tabs).
-- **Nag channels:** Gmail via Composio (required). Discord via a plain webhook
-  is **optional** — leave its env var blank to skip.
-- **Scheduler:** GitHub Actions cron — no server to maintain.
+## Why
 
-## What the nag actually says
+Because I desperately need someone to tell me to lock in.
 
-Each run:
+But I didn't want to set up another thing to log into... I wanted to keep the tracking in my Google sheet, because I like my Google sheets.
 
-1. Fetches both tabs and figures out the current week from `Master Schedule`
-   (latest row whose start date is on or before today).
-2. Builds a list of:
-   - **Overdue 1-week reviews** — rows where `Cold ✓ (date)` is set, `1wk
-     Review` is blank, and today ≥ cold_date + 7 days.
-   - **Overdue 3-week reviews** — rows where `1wk Review` is set, `3wk
-     Review` is blank, and today ≥ 1wk_date + 14 days.
-   - **Cold attempts this week** — count of rows where `Cold ✓ (date)` falls
-     between the current week's start and today.
-3. Decides what to send:
-   - **Sunday:** always nags, but swaps the new-problem ask for a "re-read
-     your notes on these problems" reminder listing every problem you've
-     cold-attempted. Overdue reviews still listed if any.
-   - **Mon–Sat:** nags if there are overdue reviews **or** the week's `# New`
-     target hasn't been met **and** no cold attempt is logged for today.
-     Otherwise silent.
-4. Sends through every configured channel. Email always runs; Discord is
-   skipped when its env var is blank. Each channel is independent — a failure
-   in one doesn't stop the others.
 
-Dates in tracker cells are parsed flexibly (`YYYY-MM-DD`, `MM/DD/YYYY`,
-`MM/DD/YY`, `DD/MM/YYYY`, `YYYY/MM/DD`). The schedule's `Dates` column accepts
-single-month (`May 20-24`) and cross-month (`June 29-Jul 3`) ranges; year is
-inferred from today.
+So now:
+- A GitHub Actions cron fires once a day.
+- Composio reads the sheet, and the script decides whether there's anything to yell at me about, and pushes a notification through Gmail and a Discord webhook.
+
+## How it works
+
+There are two tabs in the same Google Sheet that the bot reads.
+
+The first is my **Blind 75 Tracker** — one row per problem, with columns for
+`Problem`, `Diff`, `Cold ✓ (date)`, `1wk Review`, and `3wk Review`. I fill in
+those date columns whenever I actually finish a pass. The sheet has a
+dashboard at the top with stats and stuff, but the bot just scans past that
+until it finds the real header row.
+
+The second is my **Master Schedule** — one row per study week. The columns
+the bot cares about are `Dates` (something like `May 20-24`) and `# New`
+(just a number — how many new cold attempts I'm planning to do that week).
+That `# New` number is what lets me get ahead and shut the bot up early.
+
+Every evening, the bot does this:
+
+1. Figures out which study week today belongs to.
+2. Counts how many cold attempts I've already logged this week.
+3. Looks for any overdue reviews — a problem with `Cold ✓` set but `1wk
+   Review` blank that's more than a week old, or `1wk Review` set but `3wk
+   Review` blank that's more than two weeks past the 1wk date.
+4. Decides what to do:
+   - **If it's Sunday** — no new problems on Sundays. Instead I get a "go
+     re-read your notes" reminder listing every problem I've cold-attempted
+     so far. Overdue reviews still show up if there are any.
+   - **Mon–Sat** — if I've already hit this week's `# New` target, the bot
+     doesn't ask for new problems. Otherwise it nags me whenever I haven't
+     done a cold attempt yet today. Overdue reviews always fire either way.
+   - **Nothing to do** — quiet day. No email, no Discord ping.
+
+### About the streak
+
+There's no actual streak counter, but the way the logic works ends up giving
+you something that feels like one:
+
+- Do one cold attempt today and tomorrow's nag stays quiet (assuming no
+  reviews are overdue).
+- Knock out the whole week's quota by Wednesday and Thursday through
+  Saturday are quiet too.
+- Skip a day and the nag fires that evening, and the evening after, until I
+  catch up.
+
+When the next `Master Schedule` row takes over, the count resets and you're
+starting fresh.
+
+### Channels
+
+- **Email** is always sent. Goes through Composio's Gmail connector and
+  shows up as the styled HTML card below.
+- **Discord** is optional. Posts to a channel I made just for this. If I
+  also set `DISCORD_USER_ID`, the message @-mentions me, which is what
+  actually triggers the push notification on my phone.
+- The two channels are independent. If one fails the other still goes out.
+
+## What the email looks like
+
+A weekday email when I'm behind on cold attempts and have one stale 1-week
+review:
+
+```
+┌────────────────────────────────────────────────┐
+│ LEETCODE NAG                                   │
+│ Thursday, May 21, 2026                         │
+├────────────────────────────────────────────────┤
+│ ▌ Do a new cold attempt today.                 │
+│ ▌ 2/7 done this week.                          │
+├────────────────────────────────────────────────┤
+│ ▌ 1 1-week review(s) overdue                   │
+│ ▌                                              │
+│ ▌  • Contains Duplicate (Easy) — 3d overdue    │
+├────────────────────────────────────────────────┤
+│ [ Open Tracker → ]                             │
+│                                                │
+│ Stop procrastinating.                          │
+└────────────────────────────────────────────────┘
+```
+
+The real HTML version has colored left borders on each card: amber for "new
+cold attempt pending," red for overdue reviews, blue for the Sunday note
+reminder. The "Open Tracker" button drops you directly onto the Blind 75 tab
+— the bot looks up the tab's `gid` at runtime, so I don't have to hardcode
+anything.
+
+A Sunday morning email, when I'm caught up for the week:
+
+```
+┌────────────────────────────────────────────────┐
+│ LEETCODE NAG                                   │
+│ Sunday, May 24, 2026                           │
+├────────────────────────────────────────────────┤
+│ ▌ It's Sunday. No new problems today.          │
+│ ▌ Re-read your notes on the 5 problem(s)       │
+│ ▌ you've cold-attempted.                       │
+│ ▌                                              │
+│ ▌  • Contains Duplicate                        │
+│ ▌  • Valid Anagram                             │
+│ ▌  • Two Sum                                   │
+│ ▌  • Group Anagrams                            │
+│ ▌  • Top K Frequent Elements                   │
+├────────────────────────────────────────────────┤
+│ [ Open Tracker → ]                             │
+│                                                │
+│ Stop procrastinating.                          │
+└────────────────────────────────────────────────┘
+```
+
+## What the Discord ping looks like
+
+```
+@shuang
+╭─ LeetCode Nag · Thursday, May 21 ───────────╮
+│                                              │
+│  New cold attempt pending                    │
+│  Do a new cold attempt today.                │
+│  2/7 done this week.                         │
+│                                              │
+│  1 1-week review(s) overdue                  │
+│  • Contains Duplicate (Easy) — 3d overdue    │
+│                                              │
+│  Stop procrastinating.                       │
+╰──────────────────────────────────────────────╯
+```
+
+The real embed picks one accent color depending on what's worst: red if any
+review is overdue, amber if it's just "you didn't do a problem today," blue
+on Sundays. The title is a link that opens the tracker tab.
+
+## Schedule
+
+GitHub Actions cron only knows UTC and doesn't follow daylight saving, but I
+wanted "7pm Eastern" to actually mean 7pm year-round. So the workflow
+registers two cron lines (one for EDT, one for EST) and a gate step at the
+top of the job checks `TZ=America/New_York date +%H` and exits early on
+whichever one isn't in season.
+
+Two things worth knowing about scheduled GitHub Actions runs:
+
+- They can show up 5–15 minutes late if GitHub is busy.
+- The schedule pauses if you haven't pushed to the repo in 60 days.
+
+Both are fine for a daily nag.
 
 ## Setup
 
 ### 1. Connect accounts in Composio
 
-In your Composio dashboard, connect (for the same entity / user ID):
+You want the **Developer Platform** side of Composio, not "For You." (The
+"For You" side is just for MCP and gives you an API key that doesn't
+authenticate the Python SDK — I found this out the hard way.)
 
-- **Google Sheets** — give it read access to the sheet. *(required)*
-- **Gmail** — give it send permission for the account that should send nags.
-  *(required)*
+Create a project there, then connect:
 
-Note your **entity ID** (usually `default` unless you've created multiple
-users).
+- Google Sheets, with read access to the tracker.
+- Gmail, with permission to send from the account you want the nags to come
+  from.
 
-### 2. Add the `# New` column to your Master Schedule
+While you're connecting, you'll pick a `user_id` — `default` is fine.
 
-If you're using the optional weekly cap: add a column literally named `# New`
-(or `LC Target`, `Target`, etc. — see header-matching list in `nag.py`) next
-to your existing `Dates` column. One integer per week. Leave it blank for
-weeks you want the bot to ignore — those rows just won't constrain the daily
-nag.
+### 2. Add the `# New` column
 
-### 3. Fork / clone this repo into GitHub
+If you want the weekly cap, add a column called `# New` (or `LC Target` /
+`Target` — the header matcher in `nag.py` is loose) next to your `Dates`
+column in the Master Schedule. One integer per week. Blank rows just get
+ignored.
 
-GitHub Actions will run the workflow from there.
+### 3. Fill in env vars
 
-### 4. Add GitHub Secrets
+Copy `.env.example` to `.env` and fill in your values.
 
-Repo → Settings → Secrets and variables → Actions → New repository secret:
+You need: `COMPOSIO_API_KEY`, `COMPOSIO_ENTITY_ID`, `SHEET_ID`,
+`RECIPIENT_EMAIL`.
 
-**Required:**
+Optional but useful:
 
-| Secret | What it is |
-| --- | --- |
-| `COMPOSIO_API_KEY` | Consumer API key from your Composio dashboard. |
-| `COMPOSIO_ENTITY_ID` | The Composio user/entity ID (usually `default`). |
-| `SHEET_ID` | Google Sheet ID — the long string between `/d/` and `/edit`. |
-| `RECIPIENT_EMAIL` | Address to send the nag email to. |
+- `SHEET_TAB` — the tracker tab name. Default is the first tab.
+- `SCHEDULE_TAB` — the Master Schedule tab name. Leave blank if you don't
+  want the weekly cap, and the bot will just nag once a day.
+- `DISCORD_WEBHOOK_URL` and `DISCORD_USER_ID` — webhook and your Discord
+  user ID. The user ID is what makes the message actually ping you.
 
-**Optional** (leave blank to skip):
-
-| Secret | What it is |
-| --- | --- |
-| `SHEET_TAB` | Tracker tab name (e.g. `Blind 75 Tracker`). Defaults to first tab. |
-| `SCHEDULE_TAB` | Master Schedule tab name. Omit to disable weekly cap — bot then nags daily until you've done a cold attempt that day. |
-| `DISCORD_WEBHOOK_URL` | Discord channel webhook (Channel → Edit → Integrations → Webhooks). |
-| `DISCORD_USER_ID` | Your Discord user ID. Set this and the Discord nag will `@`-mention you so you actually get a push notification. User Settings → Advanced → toggle **Developer Mode** ON, then right-click your name → **Copy User ID**. |
-
-### 5. Adjust the schedule (optional)
-
-Edit the `cron:` lines in `.github/workflows/nag.yml`. The workflow ships with
-two crons (one for EDT, one for EST) and a gate step that exits in the wrong
-season, so it fires at **7pm America/New_York year-round** even though GitHub
-Actions cron is UTC-only.
-
-To retune to a different local time:
-
-- Pick your target local time during DST (summer).
-- Convert to UTC for **both** offsets (UTC−5 standard / UTC−4 daylight in
-  Eastern; adjust for other zones).
-- Update both cron lines and the `hour=$(TZ=... date +%H)` value in the gate
-  step.
-
-> Heads up: scheduled workflows can be delayed 5–15 minutes during GitHub's
-> peak load, and pause entirely if no commits land for 60 days. For a daily
-> nag, both are fine.
-
-### 6. Test it
-
-In the Actions tab, pick **leetcode-nag** → **Run workflow** to fire it
-manually. The gate step skips its 7pm check on manual runs, so it'll execute
-immediately. Watch the logs.
-
-## Local dev
+### 4. Run it locally
 
 ```sh
 pip install -r requirements.txt
-cp .env.example .env   # then fill in the values
 python nag.py
 ```
 
-`nag.py` calls `load_dotenv()` at startup, so any `.env` in the working
-directory is loaded automatically. `.env` is gitignored — never commit it.
-In CI, `load_dotenv()` is a no-op (no file present); GitHub Actions injects
-the real values via `secrets.*`.
+Exits 0 if everything went fine (or if there was nothing to nag about), 1 if
+a channel failed.
 
-The script exits 0 on success or when there's nothing to nag about, and exits
-1 if one or more channels failed.
+### 5. Push to GitHub and add the secrets
 
-## Troubleshooting
+In your repo: Settings → Secrets and variables → Actions → New repository
+secret. One per env var, same names. Once they're in, go to the Actions tab,
+pick **leetcode-nag**, and hit "Run workflow" to test. The 7pm gate skips on
+manual triggers so it fires right away.
 
-- **`Couldn't find tracker header`** — the tracker tab doesn't contain a row
-  with columns `Problem`, `Diff`/`Difficulty`, `Cold ✓ (date)`, `1wk Review`,
-  `3wk Review`. Header matching is case-insensitive and tolerates extra
-  whitespace, but the column names need to be close to those strings.
-- **Master Schedule header not found** — the schedule tab needs a `Dates`
-  column and a numeric target column (`# New`, `LC Target`, `Target`, or
-  `Leetcode Target`). Without both, the bot still runs but falls back to the
-  no-weekly-cap behavior.
-- **Schedule `Dates` row not matching today** — the parser accepts `May
-  20-24` or `June 29-Jul 3` only. Other formats are skipped silently.
-- **Composio action name errors** — if Composio renames
-  `GOOGLESHEETS_BATCH_GET` or `GMAIL_SEND_EMAIL`, update the `slug=`
-  references in `nag.py`. Run `composio actions --app gmail` (etc.) to list
-  current names.
-- **One channel keeps failing** — the others still send. Check the GitHub
-  Actions log for the stderr line starting with `FAILED <channel>`.
+## Stack
+
+- Python 3.11 — standard library plus `composio` (1.x) and `python-dotenv`.
+  That's it.
+- Composio for the Google Sheets reads and the Gmail send.
+- Plain `urllib` for the Discord webhook (with a custom User-Agent —
+  Discord 403s Python's default).
+- GitHub Actions for the cron.
+
+## Files
+
+- `nag.py` — everything. ~500 lines, one file.
+- `.github/workflows/nag.yml` — the cron + gate step.
+- `requirements.txt` — two lines.
+- `.env` — gitignored.
