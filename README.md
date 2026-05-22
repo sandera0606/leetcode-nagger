@@ -44,30 +44,39 @@ Every evening, the bot does this:
    - **Mon–Sat** — if I've already hit this week's `# New` target, the bot
      doesn't ask for new problems. Otherwise it nags me whenever I haven't
      done a cold attempt yet today. Overdue reviews always fire either way.
+   - **First run after hitting quota** — fires a separate, silent (no @-ping)
+     Discord-only "good job" message with the week's streak count. Email
+     stays quiet. See [Weekly congrats](#weekly-congrats) below.
    - **Nothing to do** — quiet day. No email, no Discord ping.
 
 ### About the streak
 
-There's no actual streak counter, but the way the logic works ends up giving
-you something that feels like one:
+Consecutive completed weeks where I hit the `# New` target. Shown on the
+weekly congrats (counting the current week as +1) and on the regular nag's
+streak card. Misses a week → resets to 0.
 
-- Do one cold attempt today and tomorrow's nag stays quiet (assuming no
-  reviews are overdue).
-- Knock out the whole week's quota by Wednesday and Thursday through
-  Saturday are quiet too.
-- Skip a day and the nag fires that evening, and the evening after, until I
-  catch up.
+### Weekly congrats
 
-When the next `Master Schedule` row takes over, the count resets and you're
-starting fresh.
+The first time I hit the `# New` target for a week, the next script run
+sends a separate Discord message — green embed, no @-ping, randomized
+slightly snarky title, streak count, and `cold / target` for the week.
+Dedup is handled by a tiny `state.json` at the repo root keyed by the
+week's start date, and the GitHub Action commits it back so the bot doesn't
+spam me every day after I finish the quota.
+
+Email is intentionally *not* sent for this — congratulations don't need to
+clutter the inbox, and the no-ping Discord message is just there if I want
+to look.
 
 ### Channels
 
-- **Email** is always sent. Goes through Composio's Gmail connector and
-  shows up as the styled HTML card below.
-- **Discord** is optional. Posts to a channel I made just for this. If I
-  also set `DISCORD_USER_ID`, the message @-mentions me, which is what
-  actually triggers the push notification on my phone.
+- **Email** is always sent for nags. Goes through Composio's Gmail
+  connector and shows up as the styled HTML card below. The weekly congrats
+  skips email on purpose.
+- **Discord** is optional. Posts to a channel I made just for this. Nags
+  @-mention me if `DISCORD_USER_ID` is set — that's what triggers the push
+  notification. The weekly congrats deliberately *doesn't* mention anyone,
+  so it shows up silently without buzzing my phone.
 - The two channels are independent. If one fails the other still goes out.
 
 ## What the email looks like
@@ -142,6 +151,19 @@ A Sunday morning email, when I'm caught up for the week:
 The real embed picks one accent color depending on what's worst: red if any
 review is overdue, amber if it's just "you didn't do a problem today," blue
 on Sundays. The title is a link that opens the tracker tab.
+
+The weekly congrats looks like this — no @-mention at the top, green
+accent, randomized title:
+
+```
+╭─ Quota met. I'm shocked. Pleasantly shocked. ╮
+│                                              │
+│  Streak           This week                  │
+│  3-week streak.   7/7 done.                  │
+│                                              │
+│  Don't get cocky.                            │
+╰──────────────────────────────────────────────╯
+```
 
 ## Schedule
 
@@ -224,7 +246,10 @@ manual triggers so it fires right away.
 
 ## Files
 
-- `nag.py` — everything. ~500 lines, one file.
-- `.github/workflows/nag.yml` — the cron + gate step.
+- `nag.py` — everything. One file.
+- `.github/workflows/nag.yml` — the cron + gate step, plus a tail step
+  that commits `state.json` back when it changes (needs `contents: write`).
+- `state.json` — tracks `last_congratulated_week_start` so the congrats
+  message only fires once per week. Committed by the workflow.
 - `requirements.txt` — two lines.
 - `.env` — gitignored.

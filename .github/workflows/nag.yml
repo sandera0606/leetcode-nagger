@@ -13,6 +13,8 @@ jobs:
   nag:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: write  # needed to commit state.json after a congrats send
     steps:
       - name: Gate on 7pm America/New_York
         id: gate
@@ -54,3 +56,17 @@ jobs:
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           DISCORD_USER_ID: ${{ secrets.DISCORD_USER_ID }}
+
+      - name: Persist state.json
+        if: steps.gate.outputs.go == 'true'
+        shell: bash
+        run: |
+          if [ -n "$(git status --porcelain state.json)" ]; then
+            git config user.name "leetcode-nagger[bot]"
+            git config user.email "leetcode-nagger@users.noreply.github.com"
+            git add state.json
+            git commit -m "chore: update congrats state"
+            git push
+          else
+            echo "state.json unchanged"
+          fi

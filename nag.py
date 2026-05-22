@@ -18,11 +18,14 @@ import sys
 import urllib.request
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
+from pathlib import Path
 
 from composio import Composio
 from dotenv import load_dotenv
 
 load_dotenv()
+
+STATE_PATH = Path(__file__).with_name("state.json")
 
 DATE_FORMATS = (
     "%Y-%m-%d",
@@ -45,6 +48,23 @@ def env(name: str) -> str:
 
 def env_opt(name: str) -> str:
     return os.environ.get(name, "").strip()
+
+
+# ---- state --------------------------------------------------------------
+
+def load_state() -> dict:
+    try:
+        with STATE_PATH.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+            return data if isinstance(data, dict) else {}
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+
+def save_state(state: dict) -> None:
+    with STATE_PATH.open("w", encoding="utf-8") as f:
+        json.dump(state, f, indent=2, sort_keys=True)
+        f.write("\n")
 
 
 # ---- parsing helpers ----------------------------------------------------
@@ -415,6 +435,33 @@ FOOTER_LINES = [
     "Solve a problem. Don't think. Solve.",
 ]
 
+CONGRATS_TITLES = [
+    "Look at you, actually doing the thing.",
+    "Quota met. I'm shocked. Pleasantly shocked.",
+    "Well, well, well. You did it.",
+    "You stayed on track. Suspicious.",
+    "Quota: complete. Ego: justified.",
+    "Goal hit. The interviewers are slightly less worried.",
+    "You did the bare minimum. Iconic.",
+    "Quota destroyed. Future-you sends regards.",
+    "On track. For once.",
+    "Congratulations, you have met expectations.",
+    "Streak preserved. Don't ruin it.",
+    "Cold attempts: handled. Pride: earned.",
+    "You hit quota without being nagged into it. Mostly.",
+    "Good job. You stayed on track.",
+    "Weekly quota: vanquished.",
+]
+
+CONGRATS_FOOTERS = [
+    "Don't get cocky.",
+    "Now do it again next week.",
+    "Treat yourself. Then get back to it Monday.",
+    "This message will self-destruct in approximately 0 seconds.",
+    "Sent silently because you've earned a moment of peace.",
+    "No ping. You've earned the quiet.",
+]
+
 
 def pick(pool: list[str], **kw: object) -> str:
     return random.choice(pool).format(**kw)
@@ -575,6 +622,37 @@ def main() -> int:
 
     week_quota_met = week is not None and cold_this_week >= week.target
     needs_new_cold = (not is_sunday) and (not week_quota_met) and (cold_today_count == 0)
+
+    # Silent weekly congrats — fires once the first run after quota is met,
+    # independent of (and before) the regular nag flow.
+    state = load_state()
+    if (
+        discord_webhook
+        and week is not None
+        and week_quota_met
+        and state.get("last_congratulated_week_start") != week.start.isoformat()
+    ):
+        prior_streak = weekly_streak(weeks, problems, today) or 0
+        streak = prior_streak + 1  # include this week's just-met quota
+        congrats_title = pick(CONGRATS_TITLES)
+        congrats_footer = pick(CONGRATS_FOOTERS)
+        congrats_embed = {
+            "title": congrats_title,
+            "url": sheet_url,
+            "color": 0x059669,  # green — matches streak_alive palette
+            "fields": [
+                {"name": "Streak", "value": f"**{streak}**-week streak.", "inline": True},
+                {"name": "This week", "value": f"**{cold_this_week}/{week.target}** done.", "inline": True},
+            ],
+            "footer": {"text": congrats_footer},
+        }
+        try:
+            send_discord(discord_webhook, congrats_embed, mention_user_id="")
+            state["last_congratulated_week_start"] = week.start.isoformat()
+            save_state(state)
+            print(f"  sent discord congrats (streak {streak})")
+        except Exception as exc:
+            print(f"  FAILED discord congrats: {exc}", file=sys.stderr)
 
     # Decide whether to send anything
     if not is_sunday and not needs_new_cold and not overdue_1wk and not overdue_3wk:
