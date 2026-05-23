@@ -1,7 +1,7 @@
 # leetcode-nagger
 
-A daily cron job that reads my Blind 75 tracker out of Google Sheets and sends
-me an email + Discord nag at 7pm Eastern if I'm behind on cold attempts or
+A daily cron job that reads my Blind 75 tracker out of Google Sheets and
+sends me a Discord nag at 7pm Eastern if I'm behind on cold attempts or
 spaced-repetition reviews.
 
 ## Why
@@ -13,7 +13,9 @@ But I didn't want to set up another thing to log into... I wanted to keep the tr
 
 So now:
 - A GitHub Actions cron fires once a day.
-- Composio reads the sheet, and the script decides whether there's anything to yell at me about, and pushes a notification through Gmail and a Discord webhook.
+- The script reads the sheet directly via the Google Sheets API, decides
+  whether there's anything to yell at me about, and pushes a notification
+  through a Discord webhook.
 
 ## How it works
 
@@ -45,9 +47,9 @@ Every evening, the bot does this:
      doesn't ask for new problems. Otherwise it nags me whenever I haven't
      done a cold attempt yet today. Overdue reviews always fire either way.
    - **First run after hitting quota** — fires a separate, silent (no @-ping)
-     Discord-only "good job" message with the week's streak count. Email
-     stays quiet. See [Weekly congrats](#weekly-congrats) below.
-   - **Nothing to do** — quiet day. No email, no Discord ping.
+     "good job" message with the week's streak count. See
+     [Weekly congrats](#weekly-congrats) below.
+   - **Nothing to do** — quiet day. No Discord ping.
 
 ### About the streak
 
@@ -64,72 +66,12 @@ Dedup is handled by a tiny `state.json` at the repo root keyed by the
 week's start date, and the GitHub Action commits it back so the bot doesn't
 spam me every day after I finish the quota.
 
-Email is intentionally *not* sent for this — congratulations don't need to
-clutter the inbox, and the no-ping Discord message is just there if I want
-to look.
-
 ### Channels
 
-- **Email** is always sent for nags. Goes through Composio's Gmail
-  connector and shows up as the styled HTML card below. The weekly congrats
-  skips email on purpose.
-- **Discord** is optional. Posts to a channel I made just for this. Nags
-  @-mention me if `DISCORD_USER_ID` is set — that's what triggers the push
-  notification. The weekly congrats deliberately *doesn't* mention anyone,
-  so it shows up silently without buzzing my phone.
-- The two channels are independent. If one fails the other still goes out.
-
-## What the email looks like
-
-A weekday email when I'm behind on cold attempts and have one stale 1-week
-review:
-
-```
-┌────────────────────────────────────────────────┐
-│ LEETCODE NAG                                   │
-│ Thursday, May 21, 2026                         │
-├────────────────────────────────────────────────┤
-│ ▌ Do a new cold attempt today.                 │
-│ ▌ 2/7 done this week.                          │
-├────────────────────────────────────────────────┤
-│ ▌ 1 1-week review(s) overdue                   │
-│ ▌                                              │
-│ ▌  • Contains Duplicate (Easy) — 3d overdue    │
-├────────────────────────────────────────────────┤
-│ [ Open Tracker → ]                             │
-│                                                │
-│ Stop procrastinating.                          │
-└────────────────────────────────────────────────┘
-```
-
-The real HTML version has colored left borders on each card: amber for "new
-cold attempt pending," red for overdue reviews, blue for the Sunday note
-reminder. The "Open Tracker" button drops you directly onto the Blind 75 tab
-— the bot looks up the tab's `gid` at runtime, so I don't have to hardcode
-anything.
-
-A Sunday morning email, when I'm caught up for the week:
-
-```
-┌────────────────────────────────────────────────┐
-│ LEETCODE NAG                                   │
-│ Sunday, May 24, 2026                           │
-├────────────────────────────────────────────────┤
-│ ▌ It's Sunday. No new problems today.          │
-│ ▌ Re-read your notes on the 5 problem(s)       │
-│ ▌ you've cold-attempted.                       │
-│ ▌                                              │
-│ ▌  • Contains Duplicate                        │
-│ ▌  • Valid Anagram                             │
-│ ▌  • Two Sum                                   │
-│ ▌  • Group Anagrams                            │
-│ ▌  • Top K Frequent Elements                   │
-├────────────────────────────────────────────────┤
-│ [ Open Tracker → ]                             │
-│                                                │
-│ Stop procrastinating.                          │
-└────────────────────────────────────────────────┘
-```
+- **Discord** is the only channel. Posts to a channel I made just for this.
+  Nags @-mention me if `DISCORD_USER_ID` is set — that's what triggers the
+  push notification. The weekly congrats deliberately *doesn't* mention
+  anyone, so it shows up silently without buzzing my phone.
 
 ## What the Discord ping looks like
 
@@ -182,19 +124,19 @@ Both are fine for a daily nag.
 
 ## Setup
 
-### 1. Connect accounts in Composio
+### 1. Create a Google Cloud service account
 
-You want the **Developer Platform** side of Composio, not "For You." (The
-"For You" side is just for MCP and gives you an API key that doesn't
-authenticate the Python SDK — I found this out the hard way.)
+In Google Cloud Console:
 
-Create a project there, then connect:
-
-- Google Sheets, with read access to the tracker.
-- Gmail, with permission to send from the account you want the nags to come
-  from.
-
-While you're connecting, you'll pick a `user_id` — `default` is fine.
+1. Make (or pick) a project, then **enable the Google Sheets API** on it.
+2. Go to **IAM & Admin → Service Accounts → Create service account**. Name
+   it anything (e.g. `leetcode-nagger`).
+3. Open the new service account → **Keys → Add Key → JSON**. Save the
+   downloaded JSON file — the whole thing goes into one env var below.
+4. Copy the service account's `client_email` (looks like
+   `leetcode-nagger@your-project.iam.gserviceaccount.com`).
+5. In Google Sheets, open your tracker, click **Share**, paste the
+   `client_email`, and give it **Viewer** access.
 
 ### 2. Add the `# New` column
 
@@ -207,16 +149,16 @@ ignored.
 
 Copy `.env.example` to `.env` and fill in your values.
 
-You need: `COMPOSIO_API_KEY`, `COMPOSIO_ENTITY_ID`, `SHEET_ID`,
-`RECIPIENT_EMAIL`.
+You need: `GOOGLE_SERVICE_ACCOUNT_JSON` (the entire JSON key as a single
+string), `SHEET_ID`, `DISCORD_WEBHOOK_URL`.
 
 Optional but useful:
 
 - `SHEET_TAB` — the tracker tab name. Default is the first tab.
 - `SCHEDULE_TAB` — the Master Schedule tab name. Leave blank if you don't
   want the weekly cap, and the bot will just nag once a day.
-- `DISCORD_WEBHOOK_URL` and `DISCORD_USER_ID` — webhook and your Discord
-  user ID. The user ID is what makes the message actually ping you.
+- `DISCORD_USER_ID` — your Discord user ID. That's what makes the message
+  actually ping you.
 
 ### 4. Run it locally
 
@@ -226,20 +168,21 @@ python nag.py
 ```
 
 Exits 0 if everything went fine (or if there was nothing to nag about), 1 if
-a channel failed.
+the Discord post fails.
 
 ### 5. Push to GitHub and add the secrets
 
 In your repo: Settings → Secrets and variables → Actions → New repository
-secret. One per env var, same names. Once they're in, go to the Actions tab,
-pick **leetcode-nag**, and hit "Run workflow" to test. The 7pm gate skips on
-manual triggers so it fires right away.
+secret. One per env var, same names. For `GOOGLE_SERVICE_ACCOUNT_JSON`,
+paste the entire contents of the key file. Once they're in, go to the
+Actions tab, pick **leetcode-nag**, and hit "Run workflow" to test. The 7pm
+gate skips on manual triggers so it fires right away.
 
 ## Stack
 
-- Python 3.11 — standard library plus `composio` (1.x) and `python-dotenv`.
-  That's it.
-- Composio for the Google Sheets reads and the Gmail send.
+- Python 3.11 — standard library plus `google-api-python-client`,
+  `google-auth`, and `python-dotenv`.
+- Google Sheets API (service-account auth) for the tracker reads.
 - Plain `urllib` for the Discord webhook (with a custom User-Agent —
   Discord 403s Python's default).
 - GitHub Actions for the cron.
@@ -251,5 +194,5 @@ manual triggers so it fires right away.
   that commits `state.json` back when it changes (needs `contents: write`).
 - `state.json` — tracks `last_congratulated_week_start` so the congrats
   message only fires once per week. Committed by the workflow.
-- `requirements.txt` — two lines.
+- `requirements.txt` — three lines.
 - `.env` — gitignored.
