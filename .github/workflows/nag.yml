@@ -3,10 +3,13 @@ name: leetcode-nag
 # GitHub Actions cron is UTC-only and ignores DST. To pin the nag to 7pm
 # America/New_York year-round, we fire at BOTH possible UTC times (one for
 # EDT, one for EST) and a gate step exits early in the wrong season.
+#
+# Blind 75 finished 2026-08-06 — daily nag disabled. Uncomment the schedule
+# block to turn it back on; workflow_dispatch still works for manual runs.
 on:
-  schedule:
-    - cron: "0 23 * * *"   # 7pm EDT (Mar–Nov, daylight saving)
-    - cron: "0 0  * * *"   # 7pm EST (Nov–Mar, standard time)
+  # schedule:
+  #   - cron: "0 23 * * *"   # 7pm EDT (Mar–Nov, daylight saving)
+  #   - cron: "0 0  * * *"   # 7pm EST (Nov–Mar, standard time)
   workflow_dispatch: {}
 
 jobs:
