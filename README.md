@@ -50,17 +50,23 @@ Fork this, paste in a few secrets, edit one config file, done.
 
 1. **Fork this repo** (button at the top right).
 
-2. **Make your tracker sheet.** Download a template from `templates/`:
+2. **Make your tracker sheet.** Open one of these and hit **File → Make a
+   copy**. That's your tracker — it lands in your own Drive, already filled in
+   with the problem list and nothing else.
 
-   | List | Problems | File |
+   | List | Problems | Copy this |
    |---|---|---|
-   | Blind 75 | 75 | `templates/blind75-tracker.xlsx` |
-   | NeetCode 150 | 150 | `templates/neetcode150-tracker.xlsx` |
-   | NeetCode 250 | 250 | `templates/neetcode250-tracker.xlsx` |
+   | Blind 75 | 75 | [Open template →](REPLACE_WITH_YOUR_DRIVE_LINK) |
+   | NeetCode 150 | 150 | [Open template →](REPLACE_WITH_YOUR_DRIVE_LINK) |
+   | NeetCode 250 | 250 | [Open template →](REPLACE_WITH_YOUR_DRIVE_LINK) |
 
-   Upload the `.xlsx` to Google Drive and open it — Drive converts it to a
-   Google Sheet, formulas and all. (There's a `.csv` of each if you'd rather
-   File → Import into a sheet you already have.)
+   Prefer not to use someone else's Drive file? The same sheets are in
+   `templates/` as `.xlsx` — upload one to Drive and it converts to a Google
+   Sheet, formatting and formulas intact. There's a `.csv` of each too, if you
+   'd rather File → Import into a sheet you already have.
+
+   All three use a tab named `Tracker`, which is what `config.yml` expects out
+   of the box, so switching lists later doesn't mean reconfiguring anything.
 
 3. **Let the bot read the sheet.** Create a Google Cloud service account, put
    its key JSON in a secret, and share the sheet with its email — full steps
@@ -96,6 +102,11 @@ Everything else in the template — pattern, time budget, the NeetCode link,
 your notes, a confidence dropdown, the dashboard at the top — is for you. The
 bot scrolls past all of it looking for the header row.
 
+The dashboard totals recalculate themselves as you fill rows in, and the
+`Confidence` column is a Shaky / OK / Strong dropdown that colours its own
+cell red, amber or green. Neither is something the bot reads — they're there
+so the sheet is worth opening on its own.
+
 **The only thing you have to do is type a date when you finish a pass.** The
 bot derives everything else: what's due, what's overdue, your streak, your
 percentage.
@@ -106,7 +117,7 @@ things. Dates can be `2026-05-20`, `05/20/2026`, `May 20, 2026` — most
 formats Sheets produces are understood.
 
 > **Heads up:** the templates are generated from the public NeetCode problem
-> lists, so a handful of problems are LeetCode Premium. The `Link` column
+> lists, so a handful of problems are LeetCode Premium. The `NeetCode` column
 > points at NeetCode, which has free versions of those.
 
 ---

@@ -1,4 +1,4 @@
-#,Pattern,Problem,Diff,Time Budget,Link,Cold ✓ (date),1wk Review,3wk Review,Key Insight + Pitfall,Confidence
+#,Pattern,Problem,Diff,Time Budget,NeetCode,Cold ✓ (date),1wk Review,3wk Review,Key Insight + Pitfall,Confidence
 1,Arrays & Hashing,Contains Duplicate,Easy,~45min first / ~5min review,https://neetcode.io/problems/duplicate-integer,,,,,
 2,Arrays & Hashing,Valid Anagram,Easy,~45min first / ~5min review,https://neetcode.io/problems/is-anagram,,,,,
 3,Arrays & Hashing,Two Sum,Easy,~45min first / ~5min review,https://neetcode.io/problems/two-integer-sum,,,,,
