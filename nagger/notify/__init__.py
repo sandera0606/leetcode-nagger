@@ -29,9 +29,9 @@ def dispatch(report: Report, channels: Channels, *, dry_run: bool = False) -> di
     if channels.email.enabled:
         senders.append((
             "email",
-            mail.configured,
+            mail.configured_for_email,
             lambda: mail.send(report, channels.email.subject_prefix),
-            "GMAIL_ADDRESS / GMAIL_APP_PASSWORD are not set",
+            "GMAIL_ADDRESS / GMAIL_APP_PASSWORD / EMAIL_TO are not all set",
         ))
     if channels.sms.enabled:
         senders.append((
@@ -54,7 +54,10 @@ def dispatch(report: Report, channels: Channels, *, dry_run: bool = False) -> di
             send()
             results[name] = "sent"
             print(f"  {name}: sent")
-        except Exception as exc:  # noqa: BLE001 — one channel must not sink the rest
+        # SystemExit is caught deliberately: a missing env var deep in a sender
+        # calls sys.exit, and SystemExit isn't an Exception — uncaught, it would
+        # abort the run and skip every channel after this one.
+        except (Exception, SystemExit) as exc:  # noqa: BLE001
             results[name] = f"failed: {exc}"
             print(f"  {name}: FAILED — {exc}", file=sys.stderr)
 

@@ -98,10 +98,16 @@ One row per problem. The bot only cares about five columns:
 | Column | What it's for |
 |---|---|
 | `Problem` | The name. Shown in the nag. **Required.** |
-| `Diff` | Easy/Medium/Hard. Shown in brackets. Optional. |
 | `Cold ✓ (date)` | The day you first solved it cold. **Required.** |
-| `1wk Review` | The day you did the first review. Optional. |
-| `3wk Review` | The day you did the second review. Optional. |
+| `1wk Review` | The day you did the first review. **Required.** |
+| `3wk Review` | The day you did the second review. **Required.** |
+| `Diff` | Easy/Medium/Hard. Shown in brackets. Optional. |
+
+All four required columns must exist, though they start empty — the two
+review columns are how the bot knows a review is still outstanding, so a sheet
+without them can't be nagged about spaced repetition at all. If they're
+missing the bot stops on the first run and tells you which one it couldn't
+find, rather than quietly never mentioning reviews again.
 
 Everything else in the template — pattern, time budget, the NeetCode link,
 your notes, a confidence dropdown, the dashboard at the top — is for you. The
@@ -372,8 +378,10 @@ python tools/make_template.py --all     # rebuild templates/
 
 ## Troubleshooting
 
-**"Couldn't find the tracker header row"** — `sheet.tab` in `config.yml`
-doesn't match your tab name, or the tab has no `Problem` + `Cold` columns.
+**"Couldn't read the tracker"** — the message names the column it couldn't
+find. Either `sheet.tab` in `config.yml` doesn't match your tab name, or the
+tab is missing one of the four required columns (`Problem`, `Cold ✓ (date)`,
+`1wk Review`, `3wk Review`).
 Tab names are case- and space-sensitive.
 
 **403 from Google** — you didn't share the sheet with the service account's

@@ -38,7 +38,12 @@ def credentials() -> tuple[str, str, str, int]:
 
 
 def configured() -> bool:
+    """Credentials only — the SMS carrier gateway borrows these without EMAIL_TO."""
     return bool(env("GMAIL_ADDRESS") and env("GMAIL_APP_PASSWORD"))
+
+
+def configured_for_email() -> bool:
+    return configured() and bool(env("EMAIL_TO"))
 
 
 def deliver(to: list[str], subject: str, text: str, html: str | None = None) -> None:

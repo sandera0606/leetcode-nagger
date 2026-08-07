@@ -122,21 +122,44 @@ def _match_column(header: str) -> str | None:
     return None
 
 
+# Difficulty is the only column the nagger can do without.
+REQUIRED_COLUMNS = ("problem", "cold", "first", "second")
+
+COLUMN_LABELS = {
+    "problem": "'Problem'",
+    "cold": "'Cold ✓ (date)'",
+    "first": "'1wk Review'",
+    "second": "'3wk Review'",
+}
+
+
 def find_header(rows: list[list[str]]) -> tuple[int, dict[str, int]]:
     """Find the real header row, skipping any dashboard block above it."""
+    best: dict[str, int] = {}
     for i, row in enumerate(rows):
         cols: dict[str, int] = {}
         for j, cell in enumerate(row):
             key = _match_column(cell)
             if key and key not in cols:
                 cols[key] = j
-        if {"problem", "cold"}.issubset(cols):
+        if set(REQUIRED_COLUMNS).issubset(cols):
             return i, cols
+        # Remember the closest near-miss so the error can name what's absent.
+        if len(cols) > len(best):
+            best = cols
+
+    missing = [COLUMN_LABELS[c] for c in REQUIRED_COLUMNS if c not in best]
+    detail = (
+        f"Found a header row but it's missing {', '.join(missing)}."
+        if best else
+        "No header row looked like a tracker at all."
+    )
     sys.exit(
-        "Couldn't find the tracker header row. The tab needs at least a "
-        "'Problem' column and a 'Cold ✓ (date)' column (matching is "
-        "case-insensitive). Check that `sheet.tab` in config.yml names the "
-        "right tab."
+        f"Couldn't read the tracker. {detail}\n"
+        f"The tab needs all of: {', '.join(COLUMN_LABELS[c] for c in REQUIRED_COLUMNS)}. "
+        "Matching is case-insensitive and loose ('Cold attempt', 'First review', "
+        "'1 week review' all work). Check that `sheet.tab` in config.yml names "
+        "the right tab, and start from a sheet in templates/ if in doubt."
     )
 
 

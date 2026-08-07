@@ -5,17 +5,20 @@
 
 from __future__ import annotations
 
+import os
 import sys
 import unittest
 from datetime import date, timedelta
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from nagger.config import Channels, Config, DiscordConfig, EmailConfig, Review, Schedule, SmsConfig
 from nagger.config import ConfigError, load_config
 from nagger.messages import build_complete_report, build_milestone_report, build_report, plain
-from nagger.notify import mail
+from nagger import notify
+from nagger.notify import discord, mail
 from nagger.notify.sms import normalize_number
 from nagger.tracker import ProblemRow, build_status, compute_streak, find_header, parse_date, parse_rows
 
@@ -101,6 +104,27 @@ class TestHeader(unittest.TestCase):
         rows = [["Problem", "Difficulty", "Cold attempt", "First review", "Second review"]]
         _, cols = find_header(rows)
         self.assertEqual(set(cols), {"problem", "difficulty", "cold", "first", "second"})
+
+    def test_difficulty_stays_optional(self):
+        rows = [["Problem", "Cold ✓ (date)", "1wk Review", "3wk Review"]]
+        _, cols = find_header(rows)
+        self.assertNotIn("difficulty", cols)
+
+    def test_review_columns_are_required(self):
+        rows = [["Problem", "Diff", "Cold ✓ (date)"]]
+        with self.assertRaises(SystemExit) as ctx:
+            find_header(rows)
+        message = str(ctx.exception)
+        self.assertIn("1wk Review", message)
+        self.assertIn("3wk Review", message)
+
+    def test_error_names_only_the_missing_column(self):
+        rows = [["Problem", "Diff", "Cold ✓ (date)", "1wk Review"]]
+        with self.assertRaises(SystemExit) as ctx:
+            find_header(rows)
+        message = str(ctx.exception)
+        self.assertIn("missing '3wk Review'", message)
+        self.assertNotIn("missing '1wk Review'", message)
 
     def test_missing_columns_exits(self):
         with self.assertRaises(SystemExit):
@@ -286,6 +310,64 @@ class TestSms(unittest.TestCase):
     def test_number_normalisation(self):
         for raw in ("+1 (555) 123-4567", "15551234567", "555-123-4567"):
             self.assertEqual(normalize_number(raw), "5551234567")
+
+
+class TestDispatch(unittest.TestCase):
+    """One misconfigured channel must never take the others down."""
+
+    def setUp(self):
+        self._env = dict(os.environ)
+        for key in ("EMAIL_TO", "GMAIL_ADDRESS", "GMAIL_APP_PASSWORD",
+                    "DISCORD_WEBHOOK_URL", "SMS_TO"):
+            os.environ.pop(key, None)
+        self.addCleanup(lambda: (os.environ.clear(), os.environ.update(self._env)))
+        rows = [ProblemRow("Two Sum", "Easy", None, None, None)]
+        self.report = build_report(
+            build_status(rows, TODAY, make_config()), "u", "Blind 75", True)
+
+    def channels(self, **kw):
+        return Channels(
+            discord=DiscordConfig(enabled=kw.get("discord", True), mention=True),
+            email=EmailConfig(enabled=kw.get("email", False), subject_prefix="[LC]"),
+            sms=SmsConfig(enabled=kw.get("sms", False),
+                          provider="carrier_gateway", carrier="verizon"),
+        )
+
+    def test_email_without_recipient_is_skipped_not_fatal(self):
+        os.environ["DISCORD_WEBHOOK_URL"] = "https://discord.com/api/webhooks/x"
+        os.environ["GMAIL_ADDRESS"] = "me@gmail.com"
+        os.environ["GMAIL_APP_PASSWORD"] = "pw"
+        with mock.patch.object(discord, "send"):
+            results = notify.dispatch(self.report, self.channels(email=True))
+        self.assertEqual(results["discord"], "sent")
+        self.assertTrue(results["email"].startswith("skipped"))
+        self.assertIn("EMAIL_TO", results["email"])
+
+    def test_a_sender_calling_sys_exit_cannot_abort_the_run(self):
+        os.environ.update({"DISCORD_WEBHOOK_URL": "https://x", "GMAIL_ADDRESS": "me@g.com",
+                           "GMAIL_APP_PASSWORD": "pw", "EMAIL_TO": "me@g.com"})
+        with mock.patch.object(mail, "send", side_effect=SystemExit("boom")), \
+             mock.patch.object(discord, "send"):
+            results = notify.dispatch(self.report, self.channels(email=True))
+        self.assertEqual(results["discord"], "sent")
+        self.assertTrue(results["email"].startswith("failed"))
+        self.assertTrue(notify.any_failed(results))
+        self.assertTrue(notify.any_sent(results))
+
+    def test_one_channel_failing_still_sends_the_others(self):
+        os.environ.update({"DISCORD_WEBHOOK_URL": "https://x", "GMAIL_ADDRESS": "me@g.com",
+                           "GMAIL_APP_PASSWORD": "pw", "EMAIL_TO": "me@g.com"})
+        with mock.patch.object(discord, "send", side_effect=RuntimeError("403")), \
+             mock.patch.object(mail, "send"):
+            results = notify.dispatch(self.report, self.channels(email=True))
+        self.assertTrue(results["discord"].startswith("failed"))
+        self.assertEqual(results["email"], "sent")
+
+    def test_disabled_channels_are_absent(self):
+        os.environ["DISCORD_WEBHOOK_URL"] = "https://x"
+        with mock.patch.object(discord, "send"):
+            results = notify.dispatch(self.report, self.channels())
+        self.assertEqual(set(results), {"discord"})
 
 
 class TestConfigValidation(unittest.TestCase):
