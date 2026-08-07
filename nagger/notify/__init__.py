@@ -1,0 +1,69 @@
+"""Fan a report out to every enabled channel.
+
+One failing channel never stops the others — a dead Twilio balance shouldn't
+cost you the Discord ping. `dispatch` returns the per-channel outcome and the
+caller decides what a failure means for the exit code.
+"""
+
+from __future__ import annotations
+
+import sys
+
+from ..config import Channels
+from ..messages import Report
+from . import discord, mail, sms
+
+
+def dispatch(report: Report, channels: Channels, *, dry_run: bool = False) -> dict[str, str]:
+    """Returns {channel: "sent" | "skipped: …" | "failed: …"}."""
+    results: dict[str, str] = {}
+
+    senders = []
+    if channels.discord.enabled:
+        senders.append((
+            "discord",
+            discord.configured,
+            lambda: discord.send(report, channels.discord.mention),
+            "DISCORD_WEBHOOK_URL is not set",
+        ))
+    if channels.email.enabled:
+        senders.append((
+            "email",
+            mail.configured,
+            lambda: mail.send(report, channels.email.subject_prefix),
+            "GMAIL_ADDRESS / GMAIL_APP_PASSWORD are not set",
+        ))
+    if channels.sms.enabled:
+        senders.append((
+            "sms",
+            lambda: sms.configured(channels.sms),
+            lambda: sms.send(report, channels.sms),
+            "SMS_TO (and the provider's credentials) are not set",
+        ))
+
+    for name, is_configured, send, missing in senders:
+        if not is_configured():
+            results[name] = f"skipped: {missing}"
+            print(f"  {name}: skipped — {missing}", file=sys.stderr)
+            continue
+        if dry_run:
+            results[name] = "skipped: dry run"
+            print(f"  {name}: would send")
+            continue
+        try:
+            send()
+            results[name] = "sent"
+            print(f"  {name}: sent")
+        except Exception as exc:  # noqa: BLE001 — one channel must not sink the rest
+            results[name] = f"failed: {exc}"
+            print(f"  {name}: FAILED — {exc}", file=sys.stderr)
+
+    return results
+
+
+def any_sent(results: dict[str, str]) -> bool:
+    return any(v == "sent" for v in results.values())
+
+
+def any_failed(results: dict[str, str]) -> bool:
+    return any(v.startswith("failed") for v in results.values())

@@ -1,0 +1,72 @@
+# leetcode-nagger settings.
+#
+# This file holds BEHAVIOUR only — nothing secret and nothing that identifies
+# you. Webhooks, email addresses, phone numbers and API keys live in `.env`
+# locally and in GitHub Actions Secrets once you push. See README.
+
+# Which list you're working through: blind75 | neetcode150 | neetcode250
+# Used for the display name and the "you finished it" message. The actual
+# problems come from whatever rows are in your sheet.
+list: blind75
+
+sheet:
+  # Name of the tracker tab. Leave blank to use the first tab in the sheet.
+  tab: Tracker
+
+schedule:
+  # How often you're expected to do new problems:
+  #   daily       — every day, all 7
+  #   weekdays    — Mon–Fri
+  #   no_sundays  — Mon–Sat
+  #   custom      — whatever you list under `days` below
+  cadence: weekdays
+
+  # Days for `cadence: custom`. Ignored otherwise.
+  days: [mon, tue, wed, thu, fri]
+
+  # New cold attempts expected on each solve day.
+  problems_per_day: 1
+
+  # When the nag fires. `nag_hour` is 0–23 in `timezone`, and daylight
+  # saving is handled for you.
+  timezone: America/New_York
+  nag_hour: 19
+
+  # On non-solve days, send a "go re-read your notes" nudge instead of
+  # asking for a new problem. Set false to stay silent on rest days
+  # (overdue reviews still get through either way).
+  rest_day_review: true
+
+review:
+  # Spaced repetition, in days after the cold attempt.
+  # A first review is due `first_days` after the cold date; the second is due
+  # `second_days - first_days` after you actually log the first one.
+  first_days: 7
+  second_days: 21
+
+  # Set false to turn off review nagging entirely.
+  enabled: true
+
+# Go quiet once every problem is cold-attempted and every review is done.
+stop_when_complete: true
+
+channels:
+  discord:
+    enabled: true
+    # @-mention you on nags so your phone actually buzzes. Needs
+    # DISCORD_USER_ID in your env. Congrats messages never mention anyone.
+    mention: true
+
+  email:
+    enabled: false
+    subject_prefix: "[LeetCode]"
+
+  sms:
+    enabled: false
+    # carrier_gateway — free, sends an email to your carrier's SMS gateway.
+    #                   Set `carrier` below. Needs the same Gmail creds as
+    #                   the email channel (it goes out over SMTP).
+    # twilio          — paid, needs TWILIO_* env vars.
+    provider: carrier_gateway
+    # See the carrier table in the README for supported values.
+    carrier: verizon

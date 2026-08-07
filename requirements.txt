@@ -1,3 +1,6 @@
 google-api-python-client>=2.0
 google-auth>=2.0
 python-dotenv>=1.0
+PyYAML>=6.0
+# Windows has no system IANA timezone database; zoneinfo needs this there.
+tzdata>=2024.1; sys_platform == "win32"

@@ -1,198 +1,411 @@
 # leetcode-nagger
 
-A daily cron job that reads my Blind 75 tracker out of Google Sheets and
-sends me a Discord nag at 7pm Eastern if I'm behind on cold attempts or
+A cron job that reads your LeetCode tracker out of Google Sheets and nags you
+— on Discord, by email, by SMS — when you're behind on new problems or on
 spaced-repetition reviews.
 
-## Why
-
-Because I desperately need someone to tell me to lock in.
-
-But I didn't want to set up another thing to log into... I wanted to keep the tracking in my Google sheet, because I like my Google sheets.
-
-
-So now:
-- A GitHub Actions cron fires once a day.
-- The script reads the sheet directly via the Google Sheets API, decides
-  whether there's anything to yell at me about, and pushes a notification
-  through a Discord webhook.
-
-## How it works
-
-There are two tabs in the same Google Sheet that the bot reads.
-
-The first is my **Blind 75 Tracker** — one row per problem, with columns for
-`Problem`, `Diff`, `Cold ✓ (date)`, `1wk Review`, and `3wk Review`. I fill in
-those date columns whenever I actually finish a pass. The sheet has a
-dashboard at the top with stats and stuff, but the bot just scans past that
-until it finds the real header row.
-
-The second is my **Master Schedule** — one row per study week. The columns
-the bot cares about are `Dates` (something like `May 20-24`) and `# New`
-(just a number — how many new cold attempts I'm planning to do that week).
-That `# New` number is what lets me get ahead and shut the bot up early.
-
-Every evening, the bot does this:
-
-1. Figures out which study week today belongs to.
-2. Counts how many cold attempts I've already logged this week.
-3. Looks for any overdue reviews — a problem with `Cold ✓` set but `1wk
-   Review` blank that's more than a week old, or `1wk Review` set but `3wk
-   Review` blank that's more than two weeks past the 1wk date.
-4. Decides what to do:
-   - **If it's Sunday** — no new problems on Sundays. Instead I get a "go
-     re-read your notes" reminder listing every problem I've cold-attempted
-     so far. Overdue reviews still show up if there are any.
-   - **Mon–Sat** — if I've already hit this week's `# New` target, the bot
-     doesn't ask for new problems. Otherwise it nags me whenever I haven't
-     done a cold attempt yet today. Overdue reviews always fire either way.
-   - **First run after hitting quota** — fires a separate, silent (no @-ping)
-     "good job" message with the week's streak count. See
-     [Weekly congrats](#weekly-congrats) below.
-   - **Nothing to do** — quiet day. No Discord ping.
-
-### About the streak
-
-Consecutive completed weeks where I hit the `# New` target. Shown on the
-weekly congrats (counting the current week as +1) and on the regular nag's
-streak card. Misses a week → resets to 0.
-
-### Weekly congrats
-
-The first time I hit the `# New` target for a week, the next script run
-sends a separate Discord message — green embed, no @-ping, randomized
-slightly snarky title, streak count, and `cold / target` for the week.
-Dedup is handled by a tiny `state.json` at the repo root keyed by the
-week's start date, and the GitHub Action commits it back so the bot doesn't
-spam me every day after I finish the quota.
-
-### Channels
-
-- **Discord** is the only channel. Posts to a channel I made just for this.
-  Nags @-mention me if `DISCORD_USER_ID` is set — that's what triggers the
-  push notification. The weekly congrats deliberately *doesn't* mention
-  anyone, so it shows up silently without buzzing my phone.
-
-## What the Discord ping looks like
+You keep your progress in a Google Sheet, which you were going to do anyway.
+There is no app to log into, no account to make, and nothing to remember.
+Fork this, paste in a few secrets, edit one config file, done.
 
 ```
-@shuang
-╭─ LeetCode Nag · Thursday, May 21 ───────────╮
+@you
+╭─ LeetCode Nag · Thursday, May 21 ────────────╮
 │                                              │
-│  New cold attempt pending                    │
+│  Streak: 6 day(s). Don't be the reason it    │
+│  ends.                                       │
+│  6-day streak.                               │
+│                                              │
 │  Do a new cold attempt today.                │
-│  2/7 done this week.                         │
+│  Nothing logged today yet.                   │
+│  1 to go · 35 left in Blind 75.              │
 │                                              │
-│  1 1-week review(s) overdue                  │
+│  1 first review(s) overdue                   │
 │  • Contains Duplicate (Easy) — 3d overdue    │
 │                                              │
 │  Stop procrastinating.                       │
 ╰──────────────────────────────────────────────╯
 ```
 
-The real embed picks one accent color depending on what's worst: red if any
-review is overdue, amber if it's just "you didn't do a problem today," blue
-on Sundays. The title is a link that opens the tracker tab.
+---
 
-The weekly congrats looks like this — no @-mention at the top, green
-accent, randomized title:
+## Contents
 
+- [Quick start](#quick-start)
+- [The tracker sheet](#the-tracker-sheet)
+- [Settings (`config.yml`)](#settings-configyml)
+- [Notification channels](#notification-channels)
+  - [Discord](#discord)
+  - [Email (Gmail)](#email-gmail)
+  - [SMS](#sms)
+- [Secrets reference](#secrets-reference)
+- [Running it on GitHub Actions](#running-it-on-github-actions)
+- [How it decides what to say](#how-it-decides-what-to-say)
+- [Local development](#local-development)
+- [Troubleshooting](#troubleshooting)
+
+---
+
+## Quick start
+
+1. **Fork this repo** (button at the top right).
+
+2. **Make your tracker sheet.** Download a template from `templates/`:
+
+   | List | Problems | File |
+   |---|---|---|
+   | Blind 75 | 75 | `templates/blind75-tracker.xlsx` |
+   | NeetCode 150 | 150 | `templates/neetcode150-tracker.xlsx` |
+   | NeetCode 250 | 250 | `templates/neetcode250-tracker.xlsx` |
+
+   Upload the `.xlsx` to Google Drive and open it — Drive converts it to a
+   Google Sheet, formulas and all. (There's a `.csv` of each if you'd rather
+   File → Import into a sheet you already have.)
+
+3. **Let the bot read the sheet.** Create a Google Cloud service account, put
+   its key JSON in a secret, and share the sheet with its email — full steps
+   in [Secrets reference](#secrets-reference).
+
+4. **Pick your channels.** Discord, email, SMS, or all three. Each one needs
+   a couple of secrets; see [Notification channels](#notification-channels).
+
+5. **Edit `config.yml`** — how often you want to be nagged, at what time, in
+   what timezone. Commit it.
+
+6. **Add your secrets** under Settings → Secrets and variables → Actions, then
+   go to the Actions tab, enable workflows, pick **leetcode-nag**, and hit
+   **Run workflow** to send yourself a test nag.
+
+That's it. From then on it fires once a day at your chosen hour.
+
+---
+
+## The tracker sheet
+
+One row per problem. The bot only cares about five columns:
+
+| Column | What it's for |
+|---|---|
+| `Problem` | The name. Shown in the nag. **Required.** |
+| `Diff` | Easy/Medium/Hard. Shown in brackets. Optional. |
+| `Cold ✓ (date)` | The day you first solved it cold. **Required.** |
+| `1wk Review` | The day you did the first review. Optional. |
+| `3wk Review` | The day you did the second review. Optional. |
+
+Everything else in the template — pattern, time budget, the NeetCode link,
+your notes, a confidence dropdown, the dashboard at the top — is for you. The
+bot scrolls past all of it looking for the header row.
+
+**The only thing you have to do is type a date when you finish a pass.** The
+bot derives everything else: what's due, what's overdue, your streak, your
+percentage.
+
+Header matching is case-insensitive and fuzzy, so `Cold attempt`,
+`First review`, `1 week review` and friends all work if you'd rather rename
+things. Dates can be `2026-05-20`, `05/20/2026`, `May 20, 2026` — most
+formats Sheets produces are understood.
+
+> **Heads up:** the templates are generated from the public NeetCode problem
+> lists, so a handful of problems are LeetCode Premium. The `Link` column
+> points at NeetCode, which has free versions of those.
+
+---
+
+## Settings (`config.yml`)
+
+This is the file you edit. It holds behaviour only — nothing secret, nothing
+that identifies you, so it's safe to commit in a public fork.
+
+```yaml
+list: blind75              # blind75 | neetcode150 | neetcode250
+
+sheet:
+  tab: Tracker             # tab name; blank = first tab
+
+schedule:
+  cadence: weekdays        # daily | weekdays | no_sundays | custom
+  days: [mon, tue, wed, thu, fri]   # only used by cadence: custom
+  problems_per_day: 1
+  timezone: America/New_York
+  nag_hour: 19             # 0–23, local to `timezone`
+  rest_day_review: true    # nudge you to re-read notes on non-solve days
+
+review:
+  enabled: true
+  first_days: 7            # first review due 7 days after the cold attempt
+  second_days: 21          # second review due 21 days after the cold attempt
+
+stop_when_complete: true   # go quiet once the whole list is done
+
+channels:
+  discord: { enabled: true, mention: true }
+  email:   { enabled: false, subject_prefix: "[LeetCode]" }
+  sms:     { enabled: false, provider: carrier_gateway, carrier: verizon }
 ```
-╭─ Quota met. I'm shocked. Pleasantly shocked. ╮
-│                                              │
-│  Streak           This week                  │
-│  3-week streak.   7/7 done.                  │
-│                                              │
-│  Don't get cocky.                            │
-╰──────────────────────────────────────────────╯
-```
 
-## Schedule
+### Cadence
 
-GitHub Actions cron only knows UTC and doesn't follow daylight saving, but I
-wanted "7pm Eastern" to actually mean 7pm year-round. So the workflow
-registers two cron lines (one for EDT, one for EST) and a gate step at the
-top of the job checks `TZ=America/New_York date +%H` and exits early on
-whichever one isn't in season.
+| `cadence` | You're expected to solve on |
+|---|---|
+| `daily` | every day |
+| `weekdays` | Mon–Fri |
+| `no_sundays` | Mon–Sat |
+| `custom` | whatever you list in `days:` |
 
-Two things worth knowing about scheduled GitHub Actions runs:
+Days that aren't solve days are **rest days**. On a rest day the bot doesn't
+ask for a new problem; if `rest_day_review: true` it reminds you to re-read
+your notes instead. Overdue reviews get through on any day.
 
-- They can show up 5–15 minutes late if GitHub is busy.
-- The schedule pauses if you haven't pushed to the repo in 60 days.
+`problems_per_day` raises the bar: set it to `2` and a day only counts once
+two cold attempts are logged with that date.
 
-Both are fine for a daily nag.
+### Timing
 
-## Setup
+`nag_hour` is in `timezone`, and daylight saving is handled for you — set
+`19` and it stays 7pm in July and in January. The workflow wakes up hourly and
+skips the 23 runs that aren't your hour.
 
-### 1. Create a Google Cloud service account
+### Reviews
 
-In Google Cloud Console:
+`first_days` counts from the cold attempt. `second_days` also counts from the
+cold attempt, but the clock only starts once you've actually logged the first
+review — so falling behind pushes the second one back rather than dumping both
+on you at once. Set `enabled: false` to turn review nagging off entirely.
 
-1. Make (or pick) a project, then **enable the Google Sheets API** on it.
-2. Go to **IAM & Admin → Service Accounts → Create service account**. Name
-   it anything (e.g. `leetcode-nagger`).
-3. Open the new service account → **Keys → Add Key → JSON**. Save the
-   downloaded JSON file — the whole thing goes into one env var below.
-4. Copy the service account's `client_email` (looks like
-   `leetcode-nagger@your-project.iam.gserviceaccount.com`).
-5. In Google Sheets, open your tracker, click **Share**, paste the
-   `client_email`, and give it **Viewer** access.
+### Stopping
 
-### 2. Add the `# New` column
+With `stop_when_complete: true`, once every problem has a cold date and every
+review is logged you get one final congratulations and then silence. Set it
+to `false` to keep the review nagging going forever.
 
-If you want the weekly cap, add a column called `# New` (or `LC Target` /
-`Target` — the header matcher in `nag.py` is loose) next to your `Dates`
-column in the Master Schedule. One integer per week. Blank rows just get
-ignored.
+---
 
-### 3. Fill in env vars
+## Notification channels
 
-Copy `.env.example` to `.env` and fill in your values.
+Turn on as many as you like in `config.yml`. Each sends independently — a
+broken SMS gateway won't cost you the Discord ping.
 
-You need: `GOOGLE_SERVICE_ACCOUNT_JSON` (the entire JSON key as a single
-string), `SHEET_ID`, `DISCORD_WEBHOOK_URL`.
+### Discord
 
-Optional but useful:
+Best signal-to-noise: a rich embed, colour-coded by urgency (red = overdue,
+amber = new problem due, blue = rest day, green = celebration).
 
-- `SHEET_TAB` — the tracker tab name. Default is the first tab.
-- `SCHEDULE_TAB` — the Master Schedule tab name. Leave blank if you don't
-  want the weekly cap, and the bot will just nag once a day.
-- `DISCORD_USER_ID` — your Discord user ID. That's what makes the message
-  actually ping you.
+1. Make a server, or use one you're in. Make a channel just for this.
+2. Channel Settings → **Integrations → Webhooks → New Webhook → Copy Webhook
+   URL** → that's `DISCORD_WEBHOOK_URL`.
+3. Optional but recommended: User Settings → Advanced → **Developer Mode** on,
+   then right-click yourself → **Copy User ID** → that's `DISCORD_USER_ID`.
+   Nags @-mention you, which is what actually triggers a phone notification.
+   Celebrations never mention anyone, so they arrive quietly.
 
-### 4. Run it locally
+### Email (Gmail)
+
+Sends a formatted HTML email (with a plain-text fallback).
+
+1. Turn on **2-Step Verification** on the Google account you're sending from.
+2. Go to [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
+   and create an app password. That 16-character string is
+   `GMAIL_APP_PASSWORD` — **not** your normal password, which won't work.
+3. Set `GMAIL_ADDRESS` (the account it's sent *from*) and `EMAIL_TO` (where it
+   goes; comma-separate for several).
+
+Not a Gmail user? Set `SMTP_HOST` and `SMTP_PORT` to your provider's server —
+ports 587 (STARTTLS) and 465 (SSL) are both handled — and put your username
+and password in `GMAIL_ADDRESS` / `GMAIL_APP_PASSWORD` anyway.
+
+### SMS
+
+A single short line: what's due, your progress, your streak. Two ways to send it.
+
+**`provider: carrier_gateway`** — free. Most North American carriers turn an
+email to `5551234567@gateway` into a text. It reuses the Gmail credentials
+above, so set those up first. Set `carrier:` to one of:
+
+| | |
+|---|---|
+| **US** | `att` `boost` `cricket` `googlefi` `metropcs` `mint` `sprint` `tmobile` `uscellular` `verizon` `visible` `xfinity` |
+| **Canada** | `bell` `fido` `freedom` `koodo` `rogers` `telus` `virgin` |
+
+Delivery is best-effort and unmetered, and some carriers have quietly retired
+their gateway. If texts stop showing up, switch to Twilio.
+
+**`provider: twilio`** — paid, but reliable and works worldwide. Get an
+account, buy a number, then set `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` and
+`TWILIO_FROM`.
+
+Either way, `SMS_TO` is your number.
+
+---
+
+## Secrets reference
+
+Locally these go in `.env` (copy `.env.example`, it's gitignored). On GitHub
+they go in **Settings → Secrets and variables → Actions → New repository
+secret**, one per name. Same names in both places.
+
+| Secret | Needed for | What it is |
+|---|---|---|
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | always | The whole service-account key file, pasted as one value |
+| `SHEET_ID` | always | The long id in your sheet's URL, between `/d/` and `/edit` |
+| `DISCORD_WEBHOOK_URL` | Discord | Channel Settings → Integrations → Webhooks |
+| `DISCORD_USER_ID` | Discord | Your user id, so nags ping you |
+| `GMAIL_ADDRESS` | email, SMS gateway | The account nags are sent *from* |
+| `GMAIL_APP_PASSWORD` | email, SMS gateway | A Google App Password |
+| `EMAIL_TO` | email | Where nags go |
+| `SMTP_HOST`, `SMTP_PORT` | non-Gmail SMTP | Defaults to `smtp.gmail.com:587` |
+| `SMS_TO` | SMS | Your mobile number |
+| `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM` | Twilio SMS | From the Twilio console |
+
+### Getting `GOOGLE_SERVICE_ACCOUNT_JSON`
+
+The bot reads your sheet as a robot user, so you never hand it your Google
+password.
+
+1. In [Google Cloud Console](https://console.cloud.google.com), create (or
+   pick) a project, then **enable the Google Sheets API** on it.
+2. **IAM & Admin → Service Accounts → Create service account.** Name it
+   anything. No roles needed.
+3. Open it → **Keys → Add Key → Create new key → JSON.** A file downloads.
+4. Paste the **entire file contents**, braces included, as the value of the
+   `GOOGLE_SERVICE_ACCOUNT_JSON` secret.
+5. Copy the service account's `client_email` (it looks like
+   `something@your-project.iam.gserviceaccount.com`), then in your sheet click
+   **Share**, paste it, and give it **Viewer**. Without this step the bot gets
+   a 403 — the key alone doesn't grant access to your sheet.
+
+---
+
+## Running it on GitHub Actions
+
+`.github/workflows/nag.yml` runs hourly and exits in about five seconds on the
+23 runs that aren't your `nag_hour`. You don't need to touch the cron line to
+change the time — that's what `config.yml` is for.
+
+Two things to know about scheduled Actions:
+
+- Runs can land 5–15 minutes late when GitHub is busy.
+- **The schedule pauses after 60 days with no pushes to the repo.** The bot
+  commits `state.json` back on days it sends something, which usually keeps
+  the clock alive on its own.
+
+Public repos get unlimited Actions minutes. Private forks burn roughly 6
+minutes a day against the free 2,000/month, which is comfortably fine.
+
+`workflow_dispatch` is enabled, so **Run workflow** sends immediately
+regardless of the hour — that's your test button.
+
+---
+
+## How it decides what to say
+
+Every run:
+
+1. Reads every row under the header.
+2. Counts cold attempts dated today, and problems still without a cold date.
+3. Finds overdue reviews — a `Cold ✓` with no first review older than
+   `first_days`, or a first review with no second review older than
+   `second_days - first_days`.
+4. Computes the streak: consecutive **solve days**, walking backwards, where
+   you logged at least `problems_per_day`. Rest days are skipped, not broken.
+   Today doesn't count against you until you've done it.
+5. Sends at most one nag per day, containing whichever of these apply:
+   - **new problem due** — a solve day, quota not met, problems remaining
+   - **overdue reviews** — always, any day
+   - **rest day nudge** — re-read your notes on what you've solved so far
+   - nothing applies → nothing is sent. Quiet days are the point.
+
+Separately, and silently (no @-mention), it celebrates at 25%, 50% and 75% of
+the list, and once more when you finish it. Those fire once each; `state.json`
+remembers which have gone out.
+
+---
+
+## Local development
 
 ```sh
 pip install -r requirements.txt
-python nag.py
+cp .env.example .env      # then fill it in
+
+python nag.py --dry-run --force   # print what it would send, send nothing
+python nag.py --test              # actually send, even if nothing is due
+python nag.py --force             # normal run, ignoring the hour gate
+python nag.py                     # exactly what the cron does
 ```
 
-Exits 0 if everything went fine (or if there was nothing to nag about), 1 if
-the Discord post fails.
+`--dry-run` is the fastest way to check your sheet parses. `--test` is the
+fastest way to check your channel credentials work.
 
-### 5. Push to GitHub and add the secrets
+Exit code is 0 when everything sent (or there was nothing to send), 1 when an
+enabled and configured channel failed.
 
-In your repo: Settings → Secrets and variables → Actions → New repository
-secret. One per env var, same names. For `GOOGLE_SERVICE_ACCOUNT_JSON`,
-paste the entire contents of the key file. Once they're in, go to the
-Actions tab, pick **leetcode-nag**, and hit "Run workflow" to test. The 7pm
-gate skips on manual triggers so it fires right away.
+Tests — no network, no credentials needed:
 
-## Stack
+```sh
+python -m unittest discover tests
+```
 
-- Python 3.11 — standard library plus `google-api-python-client`,
-  `google-auth`, and `python-dotenv`.
-- Google Sheets API (service-account auth) for the tracker reads.
-- Plain `urllib` for the Discord webhook (with a custom User-Agent —
-  Discord 403s Python's default).
-- GitHub Actions for the cron.
+Regenerating the templates, if you ever want to (needs
+`pip install -r requirements-dev.txt`):
+
+```sh
+python tools/build_problem_data.py      # refresh data/problems.json upstream
+python tools/make_template.py --all     # rebuild templates/
+```
+
+---
+
+## Troubleshooting
+
+**"Couldn't find the tracker header row"** — `sheet.tab` in `config.yml`
+doesn't match your tab name, or the tab has no `Problem` + `Cold` columns.
+Tab names are case- and space-sensitive.
+
+**403 from Google** — you didn't share the sheet with the service account's
+`client_email`, or the Sheets API isn't enabled on the project.
+
+**Discord 403** — the webhook URL is wrong or the webhook was deleted.
+
+**Gmail "Username and Password not accepted"** — you used your account
+password instead of an App Password, or 2-Step Verification isn't on.
+
+**No SMS arriving** — carrier gateways fail silently. Confirm the email
+channel works first (same credentials), check the carrier is right, then
+switch to Twilio if it still doesn't land.
+
+**Nothing happens at all** — check the Actions tab. Forks have workflows
+disabled until you click through the banner enabling them, and scheduled runs
+pause after 60 days of no pushes.
+
+**It nagged and I'd already done the work** — you logged the date in the wrong
+column, or in a format that didn't parse. Run `python nag.py --dry-run
+--force` and check the counts on the first line of output.
+
+---
 
 ## Files
 
-- `nag.py` — everything. One file.
-- `.github/workflows/nag.yml` — the cron + gate step, plus a tail step
-  that commits `state.json` back when it changes (needs `contents: write`).
-- `state.json` — tracks `last_congratulated_week_start` so the congrats
-  message only fires once per week. Committed by the workflow.
-- `requirements.txt` — three lines.
-- `.env` — gitignored.
+```
+nag.py                  entry point — gate, orchestration, exit codes
+config.yml              your settings
+nagger/
+  config.py             loads and validates config.yml
+  sheets.py             Google Sheets reads
+  tracker.py            parses rows; works out what's due, overdue, streak
+  messages.py           copy pools; builds the channel-agnostic report
+  state.py              once-a-day and once-per-milestone dedup
+  notify/               discord.py · mail.py · sms.py
+data/problems.json      the three problem lists, merged
+templates/              blank tracker sheets, .xlsx and .csv
+tools/                  regenerate the data and the templates
+tests/                  offline tests
+```
+
+## Credits
+
+Problem lists come from [NeetCode](https://neetcode.io) — the `blind75` and
+`neetcode150` membership flags from
+[neetcode-gh/leetcode](https://github.com/neetcode-gh/leetcode), and the
+NeetCode 250 roadmap via
+[ascherj/neetcode-250-guide](https://github.com/ascherj/neetcode-250-guide).
+
+MIT licensed. Fork it, change the insults, make it yours.

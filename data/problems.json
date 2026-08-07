@@ -1,0 +1,2999 @@
+{
+ "categories": [
+  "Arrays & Hashing",
+  "Two Pointers",
+  "Sliding Window",
+  "Stack",
+  "Binary Search",
+  "Linked List",
+  "Trees",
+  "Heap / Priority Queue",
+  "Backtracking",
+  "Tries",
+  "Graphs",
+  "Advanced Graphs",
+  "1-D Dynamic Programming",
+  "2-D Dynamic Programming",
+  "Greedy",
+  "Intervals",
+  "Math & Geometry",
+  "Bit Manipulation"
+ ],
+ "problems": [
+  {
+   "name": "Concatenation of Array",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Easy",
+   "leetcode_slug": "concatenation-of-array",
+   "neetcode_slug": "concatenation-of-array",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Contains Duplicate",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Easy",
+   "leetcode_slug": "contains-duplicate",
+   "neetcode_slug": "duplicate-integer",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Valid Anagram",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Easy",
+   "leetcode_slug": "valid-anagram",
+   "neetcode_slug": "is-anagram",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Two Sum",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Easy",
+   "leetcode_slug": "two-sum",
+   "neetcode_slug": "two-integer-sum",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Longest Common Prefix",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Easy",
+   "leetcode_slug": "longest-common-prefix",
+   "neetcode_slug": "longest-common-prefix",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Group Anagrams",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Medium",
+   "leetcode_slug": "group-anagrams",
+   "neetcode_slug": "anagram-groups",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Remove Element",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Easy",
+   "leetcode_slug": "remove-element",
+   "neetcode_slug": "remove-element",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Majority Element",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Easy",
+   "leetcode_slug": "majority-element",
+   "neetcode_slug": "majority-element",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Design HashSet",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Easy",
+   "leetcode_slug": "design-hashset",
+   "neetcode_slug": "design-hashset",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Design HashMap",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Easy",
+   "leetcode_slug": "design-hashmap",
+   "neetcode_slug": "design-hashmap",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Sort an Array",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Medium",
+   "leetcode_slug": "sort-an-array",
+   "neetcode_slug": "sort-an-array",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Sort Colors",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Medium",
+   "leetcode_slug": "sort-colors",
+   "neetcode_slug": "sort-colors",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Top K Frequent Elements",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Medium",
+   "leetcode_slug": "top-k-frequent-elements",
+   "neetcode_slug": "top-k-elements-in-list",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Encode and Decode Strings",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Medium",
+   "leetcode_slug": "encode-and-decode-strings",
+   "neetcode_slug": "string-encode-and-decode",
+   "premium": true,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Range Sum Query 2D Immutable",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Medium",
+   "leetcode_slug": "range-sum-query-2d-immutable",
+   "neetcode_slug": "range-sum-query-2d-immutable",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Product of Array Except Self",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Medium",
+   "leetcode_slug": "product-of-array-except-self",
+   "neetcode_slug": "products-of-array-discluding-self",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Valid Sudoku",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Medium",
+   "leetcode_slug": "valid-sudoku",
+   "neetcode_slug": "valid-sudoku",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Longest Consecutive Sequence",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Medium",
+   "leetcode_slug": "longest-consecutive-sequence",
+   "neetcode_slug": "longest-consecutive-sequence",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Best Time to Buy and Sell Stock II",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Medium",
+   "leetcode_slug": "best-time-to-buy-and-sell-stock-ii",
+   "neetcode_slug": "best-time-to-buy-and-sell-stock-ii",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Majority Element II",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Medium",
+   "leetcode_slug": "majority-element-ii",
+   "neetcode_slug": "majority-element-ii",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Subarray Sum Equals K",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Medium",
+   "leetcode_slug": "subarray-sum-equals-k",
+   "neetcode_slug": "subarray-sum-equals-k",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "First Missing Positive",
+   "pattern": "Arrays & Hashing",
+   "difficulty": "Hard",
+   "leetcode_slug": "first-missing-positive",
+   "neetcode_slug": "first-missing-positive",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Reverse String",
+   "pattern": "Two Pointers",
+   "difficulty": "Easy",
+   "leetcode_slug": "reverse-string",
+   "neetcode_slug": "reverse-string",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Valid Palindrome",
+   "pattern": "Two Pointers",
+   "difficulty": "Easy",
+   "leetcode_slug": "valid-palindrome",
+   "neetcode_slug": "is-palindrome",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Valid Palindrome II",
+   "pattern": "Two Pointers",
+   "difficulty": "Easy",
+   "leetcode_slug": "valid-palindrome-ii",
+   "neetcode_slug": "valid-palindrome-ii",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Merge Strings Alternately",
+   "pattern": "Two Pointers",
+   "difficulty": "Easy",
+   "leetcode_slug": "merge-strings-alternately",
+   "neetcode_slug": "merge-strings-alternately",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Merge Sorted Array",
+   "pattern": "Two Pointers",
+   "difficulty": "Easy",
+   "leetcode_slug": "merge-sorted-array",
+   "neetcode_slug": "merge-sorted-array",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Remove Duplicates from Sorted Array",
+   "pattern": "Two Pointers",
+   "difficulty": "Easy",
+   "leetcode_slug": "remove-duplicates-from-sorted-array",
+   "neetcode_slug": "remove-duplicates-from-sorted-array",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Two Sum II Input Array Is Sorted",
+   "pattern": "Two Pointers",
+   "difficulty": "Medium",
+   "leetcode_slug": "two-sum-ii-input-array-is-sorted",
+   "neetcode_slug": "two-integer-sum-ii",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "3Sum",
+   "pattern": "Two Pointers",
+   "difficulty": "Medium",
+   "leetcode_slug": "3sum",
+   "neetcode_slug": "three-integer-sum",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "4Sum",
+   "pattern": "Two Pointers",
+   "difficulty": "Medium",
+   "leetcode_slug": "4sum",
+   "neetcode_slug": "4sum",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Rotate Array",
+   "pattern": "Two Pointers",
+   "difficulty": "Medium",
+   "leetcode_slug": "rotate-array",
+   "neetcode_slug": "rotate-array",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Container with Most Water",
+   "pattern": "Two Pointers",
+   "difficulty": "Medium",
+   "leetcode_slug": "container-with-most-water",
+   "neetcode_slug": "max-water-container",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Boats to Save People",
+   "pattern": "Two Pointers",
+   "difficulty": "Medium",
+   "leetcode_slug": "boats-to-save-people",
+   "neetcode_slug": "boats-to-save-people",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Trapping Rain Water",
+   "pattern": "Two Pointers",
+   "difficulty": "Hard",
+   "leetcode_slug": "trapping-rain-water",
+   "neetcode_slug": "trapping-rain-water",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Contains Duplicate II",
+   "pattern": "Sliding Window",
+   "difficulty": "Easy",
+   "leetcode_slug": "contains-duplicate-ii",
+   "neetcode_slug": "contains-duplicate-ii",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Best Time to Buy and Sell Stock",
+   "pattern": "Sliding Window",
+   "difficulty": "Easy",
+   "leetcode_slug": "best-time-to-buy-and-sell-stock",
+   "neetcode_slug": "buy-and-sell-crypto",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Longest Substring without Repeating Characters",
+   "pattern": "Sliding Window",
+   "difficulty": "Medium",
+   "leetcode_slug": "longest-substring-without-repeating-characters",
+   "neetcode_slug": "longest-substring-without-duplicates",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Longest Repeating Character Replacement",
+   "pattern": "Sliding Window",
+   "difficulty": "Medium",
+   "leetcode_slug": "longest-repeating-character-replacement",
+   "neetcode_slug": "longest-repeating-substring-with-replacement",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Permutation in String",
+   "pattern": "Sliding Window",
+   "difficulty": "Medium",
+   "leetcode_slug": "permutation-in-string",
+   "neetcode_slug": "permutation-string",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Minimum Size Subarray Sum",
+   "pattern": "Sliding Window",
+   "difficulty": "Medium",
+   "leetcode_slug": "minimum-size-subarray-sum",
+   "neetcode_slug": "minimum-size-subarray-sum",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Find K Closest Elements",
+   "pattern": "Sliding Window",
+   "difficulty": "Medium",
+   "leetcode_slug": "find-k-closest-elements",
+   "neetcode_slug": "find-k-closest-elements",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Minimum Window Substring",
+   "pattern": "Sliding Window",
+   "difficulty": "Hard",
+   "leetcode_slug": "minimum-window-substring",
+   "neetcode_slug": "minimum-window-with-characters",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Sliding Window Maximum",
+   "pattern": "Sliding Window",
+   "difficulty": "Hard",
+   "leetcode_slug": "sliding-window-maximum",
+   "neetcode_slug": "sliding-window-maximum",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Baseball Game",
+   "pattern": "Stack",
+   "difficulty": "Easy",
+   "leetcode_slug": "baseball-game",
+   "neetcode_slug": "baseball-game",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Valid Parentheses",
+   "pattern": "Stack",
+   "difficulty": "Easy",
+   "leetcode_slug": "valid-parentheses",
+   "neetcode_slug": "validate-parentheses",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Implement Stack Using Queues",
+   "pattern": "Stack",
+   "difficulty": "Easy",
+   "leetcode_slug": "implement-stack-using-queues",
+   "neetcode_slug": "implement-stack-using-queues",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Implement Queue using Stacks",
+   "pattern": "Stack",
+   "difficulty": "Easy",
+   "leetcode_slug": "implement-queue-using-stacks",
+   "neetcode_slug": "implement-queue-using-stacks",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Min Stack",
+   "pattern": "Stack",
+   "difficulty": "Medium",
+   "leetcode_slug": "min-stack",
+   "neetcode_slug": "minimum-stack",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Evaluate Reverse Polish Notation",
+   "pattern": "Stack",
+   "difficulty": "Medium",
+   "leetcode_slug": "evaluate-reverse-polish-notation",
+   "neetcode_slug": "evaluate-reverse-polish-notation",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Generate Parentheses",
+   "pattern": "Stack",
+   "difficulty": "Medium",
+   "leetcode_slug": "generate-parentheses",
+   "neetcode_slug": "generate-parentheses",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Asteroid Collision",
+   "pattern": "Stack",
+   "difficulty": "Medium",
+   "leetcode_slug": "asteroid-collision",
+   "neetcode_slug": "asteroid-collision",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Daily Temperatures",
+   "pattern": "Stack",
+   "difficulty": "Medium",
+   "leetcode_slug": "daily-temperatures",
+   "neetcode_slug": "daily-temperatures",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Online Stock Span",
+   "pattern": "Stack",
+   "difficulty": "Medium",
+   "leetcode_slug": "online-stock-span",
+   "neetcode_slug": "online-stock-span",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Car Fleet",
+   "pattern": "Stack",
+   "difficulty": "Medium",
+   "leetcode_slug": "car-fleet",
+   "neetcode_slug": "car-fleet",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Simplify Path",
+   "pattern": "Stack",
+   "difficulty": "Medium",
+   "leetcode_slug": "simplify-path",
+   "neetcode_slug": "simplify-path",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Decode String",
+   "pattern": "Stack",
+   "difficulty": "Medium",
+   "leetcode_slug": "decode-string",
+   "neetcode_slug": "decode-string",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Maximum Frequency Stack",
+   "pattern": "Stack",
+   "difficulty": "Hard",
+   "leetcode_slug": "maximum-frequency-stack",
+   "neetcode_slug": "maximum-frequency-stack",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Largest Rectangle in Histogram",
+   "pattern": "Stack",
+   "difficulty": "Hard",
+   "leetcode_slug": "largest-rectangle-in-histogram",
+   "neetcode_slug": "largest-rectangle-in-histogram",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Binary Search",
+   "pattern": "Binary Search",
+   "difficulty": "Easy",
+   "leetcode_slug": "binary-search",
+   "neetcode_slug": "binary-search",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Search Insert Position",
+   "pattern": "Binary Search",
+   "difficulty": "Easy",
+   "leetcode_slug": "search-insert-position",
+   "neetcode_slug": "search-insert-position",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Guess Number Higher or Lower",
+   "pattern": "Binary Search",
+   "difficulty": "Easy",
+   "leetcode_slug": "guess-number-higher-or-lower",
+   "neetcode_slug": "guess-number-higher-or-lower",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Sqrt(x)",
+   "pattern": "Binary Search",
+   "difficulty": "Easy",
+   "leetcode_slug": "sqrtx",
+   "neetcode_slug": "sqrtx",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Search a 2D Matrix",
+   "pattern": "Binary Search",
+   "difficulty": "Medium",
+   "leetcode_slug": "search-a-2d-matrix",
+   "neetcode_slug": "search-2d-matrix",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Koko Eating Bananas",
+   "pattern": "Binary Search",
+   "difficulty": "Medium",
+   "leetcode_slug": "koko-eating-bananas",
+   "neetcode_slug": "eating-bananas",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Capacity to Ship Packages Within D Days",
+   "pattern": "Binary Search",
+   "difficulty": "Medium",
+   "leetcode_slug": "capacity-to-ship-packages-within-d-days",
+   "neetcode_slug": "capacity-to-ship-packages-within-d-days",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Find Minimum in Rotated Sorted Array",
+   "pattern": "Binary Search",
+   "difficulty": "Medium",
+   "leetcode_slug": "find-minimum-in-rotated-sorted-array",
+   "neetcode_slug": "find-minimum-in-rotated-sorted-array",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Search in Rotated Sorted Array",
+   "pattern": "Binary Search",
+   "difficulty": "Medium",
+   "leetcode_slug": "search-in-rotated-sorted-array",
+   "neetcode_slug": "find-target-in-rotated-sorted-array",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Search in Rotated Sorted Array II",
+   "pattern": "Binary Search",
+   "difficulty": "Medium",
+   "leetcode_slug": "search-in-rotated-sorted-array-ii",
+   "neetcode_slug": "search-in-rotated-sorted-array-ii",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Time Based Key Value Store",
+   "pattern": "Binary Search",
+   "difficulty": "Medium",
+   "leetcode_slug": "time-based-key-value-store",
+   "neetcode_slug": "time-based-key-value-store",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Split Array Largest Sum",
+   "pattern": "Binary Search",
+   "difficulty": "Hard",
+   "leetcode_slug": "split-array-largest-sum",
+   "neetcode_slug": "split-array-largest-sum",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Median of Two Sorted Arrays",
+   "pattern": "Binary Search",
+   "difficulty": "Hard",
+   "leetcode_slug": "median-of-two-sorted-arrays",
+   "neetcode_slug": "median-of-two-sorted-arrays",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Find in Mountain Array",
+   "pattern": "Binary Search",
+   "difficulty": "Hard",
+   "leetcode_slug": "find-in-mountain-array",
+   "neetcode_slug": "find-in-mountain-array",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Reverse Linked List",
+   "pattern": "Linked List",
+   "difficulty": "Easy",
+   "leetcode_slug": "reverse-linked-list",
+   "neetcode_slug": "reverse-a-linked-list",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Merge Two Sorted Lists",
+   "pattern": "Linked List",
+   "difficulty": "Easy",
+   "leetcode_slug": "merge-two-sorted-lists",
+   "neetcode_slug": "merge-two-sorted-linked-lists",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Linked List Cycle",
+   "pattern": "Linked List",
+   "difficulty": "Easy",
+   "leetcode_slug": "linked-list-cycle",
+   "neetcode_slug": "linked-list-cycle-detection",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Reorder List",
+   "pattern": "Linked List",
+   "difficulty": "Medium",
+   "leetcode_slug": "reorder-list",
+   "neetcode_slug": "reorder-linked-list",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Remove Nth Node from End of List",
+   "pattern": "Linked List",
+   "difficulty": "Medium",
+   "leetcode_slug": "remove-nth-node-from-end-of-list",
+   "neetcode_slug": "remove-node-from-end-of-linked-list",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Copy List with Random Pointer",
+   "pattern": "Linked List",
+   "difficulty": "Medium",
+   "leetcode_slug": "copy-list-with-random-pointer",
+   "neetcode_slug": "copy-linked-list-with-random-pointer",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Add Two Numbers",
+   "pattern": "Linked List",
+   "difficulty": "Medium",
+   "leetcode_slug": "add-two-numbers",
+   "neetcode_slug": "add-two-numbers",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Find the Duplicate Number",
+   "pattern": "Linked List",
+   "difficulty": "Medium",
+   "leetcode_slug": "find-the-duplicate-number",
+   "neetcode_slug": "find-duplicate-integer",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Reverse Linked List II",
+   "pattern": "Linked List",
+   "difficulty": "Medium",
+   "leetcode_slug": "reverse-linked-list-ii",
+   "neetcode_slug": "reverse-linked-list-ii",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Design Circular Queue",
+   "pattern": "Linked List",
+   "difficulty": "Medium",
+   "leetcode_slug": "design-circular-queue",
+   "neetcode_slug": "design-circular-queue",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "LRU Cache",
+   "pattern": "Linked List",
+   "difficulty": "Medium",
+   "leetcode_slug": "lru-cache",
+   "neetcode_slug": "lru-cache",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "LFU Cache",
+   "pattern": "Linked List",
+   "difficulty": "Hard",
+   "leetcode_slug": "lfu-cache",
+   "neetcode_slug": "lfu-cache",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Merge K Sorted Lists",
+   "pattern": "Linked List",
+   "difficulty": "Hard",
+   "leetcode_slug": "merge-k-sorted-lists",
+   "neetcode_slug": "merge-k-sorted-linked-lists",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Reverse Nodes in K Group",
+   "pattern": "Linked List",
+   "difficulty": "Hard",
+   "leetcode_slug": "reverse-nodes-in-k-group",
+   "neetcode_slug": "reverse-nodes-in-k-group",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Binary Tree Inorder Traversal",
+   "pattern": "Trees",
+   "difficulty": "Easy",
+   "leetcode_slug": "binary-tree-inorder-traversal",
+   "neetcode_slug": "binary-tree-inorder-traversal",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Binary Tree Preorder Traversal",
+   "pattern": "Trees",
+   "difficulty": "Easy",
+   "leetcode_slug": "binary-tree-preorder-traversal",
+   "neetcode_slug": "binary-tree-preorder-traversal",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Binary Tree Postorder Traversal",
+   "pattern": "Trees",
+   "difficulty": "Easy",
+   "leetcode_slug": "binary-tree-postorder-traversal",
+   "neetcode_slug": "binary-tree-postorder-traversal",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Invert Binary Tree",
+   "pattern": "Trees",
+   "difficulty": "Easy",
+   "leetcode_slug": "invert-binary-tree",
+   "neetcode_slug": "invert-a-binary-tree",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Maximum Depth of Binary Tree",
+   "pattern": "Trees",
+   "difficulty": "Easy",
+   "leetcode_slug": "maximum-depth-of-binary-tree",
+   "neetcode_slug": "depth-of-binary-tree",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Diameter of Binary Tree",
+   "pattern": "Trees",
+   "difficulty": "Easy",
+   "leetcode_slug": "diameter-of-binary-tree",
+   "neetcode_slug": "binary-tree-diameter",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Balanced Binary Tree",
+   "pattern": "Trees",
+   "difficulty": "Easy",
+   "leetcode_slug": "balanced-binary-tree",
+   "neetcode_slug": "balanced-binary-tree",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Same Tree",
+   "pattern": "Trees",
+   "difficulty": "Easy",
+   "leetcode_slug": "same-tree",
+   "neetcode_slug": "same-binary-tree",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Subtree of Another Tree",
+   "pattern": "Trees",
+   "difficulty": "Easy",
+   "leetcode_slug": "subtree-of-another-tree",
+   "neetcode_slug": "subtree-of-a-binary-tree",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Lowest Common Ancestor of a Binary Search Tree",
+   "pattern": "Trees",
+   "difficulty": "Medium",
+   "leetcode_slug": "lowest-common-ancestor-of-a-binary-search-tree",
+   "neetcode_slug": "lowest-common-ancestor-in-binary-search-tree",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Insert into a Binary Search Tree",
+   "pattern": "Trees",
+   "difficulty": "Medium",
+   "leetcode_slug": "insert-into-a-binary-search-tree",
+   "neetcode_slug": "insert-into-a-binary-search-tree",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Delete Node in a BST",
+   "pattern": "Trees",
+   "difficulty": "Medium",
+   "leetcode_slug": "delete-node-in-a-bst",
+   "neetcode_slug": "delete-node-in-a-bst",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Binary Tree Level Order Traversal",
+   "pattern": "Trees",
+   "difficulty": "Medium",
+   "leetcode_slug": "binary-tree-level-order-traversal",
+   "neetcode_slug": "level-order-traversal-of-binary-tree",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Binary Tree Right Side View",
+   "pattern": "Trees",
+   "difficulty": "Medium",
+   "leetcode_slug": "binary-tree-right-side-view",
+   "neetcode_slug": "binary-tree-right-side-view",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Construct Quad Tree",
+   "pattern": "Trees",
+   "difficulty": "Medium",
+   "leetcode_slug": "construct-quad-tree",
+   "neetcode_slug": "construct-quad-tree",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Count Good Nodes in Binary Tree",
+   "pattern": "Trees",
+   "difficulty": "Medium",
+   "leetcode_slug": "count-good-nodes-in-binary-tree",
+   "neetcode_slug": "count-good-nodes-in-binary-tree",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Validate Binary Search Tree",
+   "pattern": "Trees",
+   "difficulty": "Medium",
+   "leetcode_slug": "validate-binary-search-tree",
+   "neetcode_slug": "valid-binary-search-tree",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Kth Smallest Element in a BST",
+   "pattern": "Trees",
+   "difficulty": "Medium",
+   "leetcode_slug": "kth-smallest-element-in-a-bst",
+   "neetcode_slug": "kth-smallest-integer-in-bst",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Construct Binary Tree from Preorder and Inorder Traversal",
+   "pattern": "Trees",
+   "difficulty": "Medium",
+   "leetcode_slug": "construct-binary-tree-from-preorder-and-inorder-traversal",
+   "neetcode_slug": "binary-tree-from-preorder-and-inorder-traversal",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "House Robber III",
+   "pattern": "Trees",
+   "difficulty": "Medium",
+   "leetcode_slug": "house-robber-iii",
+   "neetcode_slug": "house-robber-iii",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Delete Leaves with a Given Value",
+   "pattern": "Trees",
+   "difficulty": "Medium",
+   "leetcode_slug": "delete-leaves-with-a-given-value",
+   "neetcode_slug": "delete-leaves-with-a-given-value",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Binary Tree Maximum Path Sum",
+   "pattern": "Trees",
+   "difficulty": "Hard",
+   "leetcode_slug": "binary-tree-maximum-path-sum",
+   "neetcode_slug": "binary-tree-maximum-path-sum",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Serialize and Deserialize Binary Tree",
+   "pattern": "Trees",
+   "difficulty": "Hard",
+   "leetcode_slug": "serialize-and-deserialize-binary-tree",
+   "neetcode_slug": "serialize-and-deserialize-binary-tree",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Kth Largest Element in a Stream",
+   "pattern": "Heap / Priority Queue",
+   "difficulty": "Easy",
+   "leetcode_slug": "kth-largest-element-in-a-stream",
+   "neetcode_slug": "kth-largest-integer-in-a-stream",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Last Stone Weight",
+   "pattern": "Heap / Priority Queue",
+   "difficulty": "Easy",
+   "leetcode_slug": "last-stone-weight",
+   "neetcode_slug": "last-stone-weight",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "K Closest Points to Origin",
+   "pattern": "Heap / Priority Queue",
+   "difficulty": "Medium",
+   "leetcode_slug": "k-closest-points-to-origin",
+   "neetcode_slug": "k-closest-points-to-origin",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Kth Largest Element in an Array",
+   "pattern": "Heap / Priority Queue",
+   "difficulty": "Medium",
+   "leetcode_slug": "kth-largest-element-in-an-array",
+   "neetcode_slug": "kth-largest-element-in-an-array",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Task Scheduler",
+   "pattern": "Heap / Priority Queue",
+   "difficulty": "Medium",
+   "leetcode_slug": "task-scheduler",
+   "neetcode_slug": "task-scheduling",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Design Twitter",
+   "pattern": "Heap / Priority Queue",
+   "difficulty": "Medium",
+   "leetcode_slug": "design-twitter",
+   "neetcode_slug": "design-twitter-feed",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Single Threaded CPU",
+   "pattern": "Heap / Priority Queue",
+   "difficulty": "Medium",
+   "leetcode_slug": "single-threaded-cpu",
+   "neetcode_slug": "single-threaded-cpu",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Reorganize String",
+   "pattern": "Heap / Priority Queue",
+   "difficulty": "Medium",
+   "leetcode_slug": "reorganize-string",
+   "neetcode_slug": "reorganize-string",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Longest Happy String",
+   "pattern": "Heap / Priority Queue",
+   "difficulty": "Medium",
+   "leetcode_slug": "longest-happy-string",
+   "neetcode_slug": "longest-happy-string",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Car Pooling",
+   "pattern": "Heap / Priority Queue",
+   "difficulty": "Medium",
+   "leetcode_slug": "car-pooling",
+   "neetcode_slug": "car-pooling",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Find Median from Data Stream",
+   "pattern": "Heap / Priority Queue",
+   "difficulty": "Hard",
+   "leetcode_slug": "find-median-from-data-stream",
+   "neetcode_slug": "find-median-in-a-data-stream",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "IPO",
+   "pattern": "Heap / Priority Queue",
+   "difficulty": "Hard",
+   "leetcode_slug": "ipo",
+   "neetcode_slug": "ipo",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Sum of All Subsets XOR Total",
+   "pattern": "Backtracking",
+   "difficulty": "Easy",
+   "leetcode_slug": "sum-of-all-subset-xor-totals",
+   "neetcode_slug": "sum-of-all-subset-xor-totals",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Subsets",
+   "pattern": "Backtracking",
+   "difficulty": "Medium",
+   "leetcode_slug": "subsets",
+   "neetcode_slug": "subsets",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Combination Sum",
+   "pattern": "Backtracking",
+   "difficulty": "Medium",
+   "leetcode_slug": "combination-sum",
+   "neetcode_slug": "combination-target-sum",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Combination Sum II",
+   "pattern": "Backtracking",
+   "difficulty": "Medium",
+   "leetcode_slug": "combination-sum-ii",
+   "neetcode_slug": "combination-target-sum-ii",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Combinations",
+   "pattern": "Backtracking",
+   "difficulty": "Medium",
+   "leetcode_slug": "combinations",
+   "neetcode_slug": "combinations",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Permutations",
+   "pattern": "Backtracking",
+   "difficulty": "Medium",
+   "leetcode_slug": "permutations",
+   "neetcode_slug": "permutations",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Subsets II",
+   "pattern": "Backtracking",
+   "difficulty": "Medium",
+   "leetcode_slug": "subsets-ii",
+   "neetcode_slug": "subsets-ii",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Permutations II",
+   "pattern": "Backtracking",
+   "difficulty": "Medium",
+   "leetcode_slug": "permutations-ii",
+   "neetcode_slug": "permutations-ii",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Word Search",
+   "pattern": "Backtracking",
+   "difficulty": "Medium",
+   "leetcode_slug": "word-search",
+   "neetcode_slug": "search-for-word",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Palindrome Partitioning",
+   "pattern": "Backtracking",
+   "difficulty": "Medium",
+   "leetcode_slug": "palindrome-partitioning",
+   "neetcode_slug": "palindrome-partitioning",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Letter Combinations of a Phone Number",
+   "pattern": "Backtracking",
+   "difficulty": "Medium",
+   "leetcode_slug": "letter-combinations-of-a-phone-number",
+   "neetcode_slug": "combinations-of-a-phone-number",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Matchsticks to Square",
+   "pattern": "Backtracking",
+   "difficulty": "Medium",
+   "leetcode_slug": "matchsticks-to-square",
+   "neetcode_slug": "matchsticks-to-square",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Partition to K Equal Sum Subsets",
+   "pattern": "Backtracking",
+   "difficulty": "Medium",
+   "leetcode_slug": "partition-to-k-equal-sum-subsets",
+   "neetcode_slug": "partition-to-k-equal-sum-subsets",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "N Queens",
+   "pattern": "Backtracking",
+   "difficulty": "Hard",
+   "leetcode_slug": "n-queens",
+   "neetcode_slug": "n-queens",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "N Queens II",
+   "pattern": "Backtracking",
+   "difficulty": "Hard",
+   "leetcode_slug": "n-queens-ii",
+   "neetcode_slug": "n-queens-ii",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Word Break II",
+   "pattern": "Backtracking",
+   "difficulty": "Hard",
+   "leetcode_slug": "word-break-ii",
+   "neetcode_slug": "word-break-ii",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Implement Trie Prefix Tree",
+   "pattern": "Tries",
+   "difficulty": "Medium",
+   "leetcode_slug": "implement-trie-prefix-tree",
+   "neetcode_slug": "implement-prefix-tree",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Design Add and Search Words Data Structure",
+   "pattern": "Tries",
+   "difficulty": "Medium",
+   "leetcode_slug": "design-add-and-search-words-data-structure",
+   "neetcode_slug": "design-word-search-data-structure",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Extra Characters in a String",
+   "pattern": "Tries",
+   "difficulty": "Medium",
+   "leetcode_slug": "extra-characters-in-a-string",
+   "neetcode_slug": "extra-characters-in-a-string",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Word Search II",
+   "pattern": "Tries",
+   "difficulty": "Hard",
+   "leetcode_slug": "word-search-ii",
+   "neetcode_slug": "search-for-word-ii",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Island Perimeter",
+   "pattern": "Graphs",
+   "difficulty": "Easy",
+   "leetcode_slug": "island-perimeter",
+   "neetcode_slug": "island-perimeter",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Verifying an Alien Dictionary",
+   "pattern": "Graphs",
+   "difficulty": "Easy",
+   "leetcode_slug": "verifying-an-alien-dictionary",
+   "neetcode_slug": "verifying-an-alien-dictionary",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Find the Town Judge",
+   "pattern": "Graphs",
+   "difficulty": "Easy",
+   "leetcode_slug": "find-the-town-judge",
+   "neetcode_slug": "find-the-town-judge",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Number of Islands",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "number-of-islands",
+   "neetcode_slug": "count-number-of-islands",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Max Area of Island",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "max-area-of-island",
+   "neetcode_slug": "max-area-of-island",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Clone Graph",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "clone-graph",
+   "neetcode_slug": "clone-graph",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Walls and Gates",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "walls-and-gates",
+   "neetcode_slug": "islands-and-treasure",
+   "premium": true,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Rotting Oranges",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "rotting-oranges",
+   "neetcode_slug": "rotting-fruit",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Pacific Atlantic Water Flow",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "pacific-atlantic-water-flow",
+   "neetcode_slug": "pacific-atlantic-water-flow",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Surrounded Regions",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "surrounded-regions",
+   "neetcode_slug": "surrounded-regions",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Open the Lock",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "open-the-lock",
+   "neetcode_slug": "open-the-lock",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Course Schedule",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "course-schedule",
+   "neetcode_slug": "course-schedule",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Course Schedule II",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "course-schedule-ii",
+   "neetcode_slug": "course-schedule-ii",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Graph Valid Tree",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "graph-valid-tree",
+   "neetcode_slug": "valid-tree",
+   "premium": true,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Course Schedule IV",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "course-schedule-iv",
+   "neetcode_slug": "course-schedule-iv",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Number of Connected Components in an Undirected Graph",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "number-of-connected-components-in-an-undirected-graph",
+   "neetcode_slug": "count-connected-components",
+   "premium": true,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Redundant Connection",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "redundant-connection",
+   "neetcode_slug": "redundant-connection",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Accounts Merge",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "accounts-merge",
+   "neetcode_slug": "accounts-merge",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Evaluate Division",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "evaluate-division",
+   "neetcode_slug": "evaluate-division",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Minimum Height Trees",
+   "pattern": "Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "minimum-height-trees",
+   "neetcode_slug": "minimum-height-trees",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Word Ladder",
+   "pattern": "Graphs",
+   "difficulty": "Hard",
+   "leetcode_slug": "word-ladder",
+   "neetcode_slug": "word-ladder",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Path with Minimum Effort",
+   "pattern": "Advanced Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "path-with-minimum-effort",
+   "neetcode_slug": "path-with-minimum-effort",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Network Delay Time",
+   "pattern": "Advanced Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "network-delay-time",
+   "neetcode_slug": "network-delay-time",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Reconstruct Itinerary",
+   "pattern": "Advanced Graphs",
+   "difficulty": "Hard",
+   "leetcode_slug": "reconstruct-itinerary",
+   "neetcode_slug": "reconstruct-flight-path",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Min Cost to Connect All Points",
+   "pattern": "Advanced Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "min-cost-to-connect-all-points",
+   "neetcode_slug": "min-cost-to-connect-points",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Swim in Rising Water",
+   "pattern": "Advanced Graphs",
+   "difficulty": "Hard",
+   "leetcode_slug": "swim-in-rising-water",
+   "neetcode_slug": "swim-in-rising-water",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Alien Dictionary",
+   "pattern": "Advanced Graphs",
+   "difficulty": "Hard",
+   "leetcode_slug": "alien-dictionary",
+   "neetcode_slug": "foreign-dictionary",
+   "premium": true,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Cheapest Flights Within K Stops",
+   "pattern": "Advanced Graphs",
+   "difficulty": "Medium",
+   "leetcode_slug": "cheapest-flights-within-k-stops",
+   "neetcode_slug": "cheapest-flight-path",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Find Critical and Pseudo Critical Edges in Minimum Spanning Tree",
+   "pattern": "Advanced Graphs",
+   "difficulty": "Hard",
+   "leetcode_slug": "find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree",
+   "neetcode_slug": "find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Build a Matrix with Conditions",
+   "pattern": "Advanced Graphs",
+   "difficulty": "Hard",
+   "leetcode_slug": "build-a-matrix-with-conditions",
+   "neetcode_slug": "build-a-matrix-with-conditions",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Greatest Common Divisor Traversal",
+   "pattern": "Advanced Graphs",
+   "difficulty": "Hard",
+   "leetcode_slug": "greatest-common-divisor-traversal",
+   "neetcode_slug": "greatest-common-divisor-traversal",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Climbing Stairs",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Easy",
+   "leetcode_slug": "climbing-stairs",
+   "neetcode_slug": "climbing-stairs",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Min Cost Climbing Stairs",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Easy",
+   "leetcode_slug": "min-cost-climbing-stairs",
+   "neetcode_slug": "min-cost-climbing-stairs",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "N-th Tribonacci Number",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Easy",
+   "leetcode_slug": "n-th-tribonacci-number",
+   "neetcode_slug": "n-th-tribonacci-number",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "House Robber",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "house-robber",
+   "neetcode_slug": "house-robber",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "House Robber II",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "house-robber-ii",
+   "neetcode_slug": "house-robber-ii",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Longest Palindromic Substring",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "longest-palindromic-substring",
+   "neetcode_slug": "longest-palindromic-substring",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Palindromic Substrings",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "palindromic-substrings",
+   "neetcode_slug": "palindromic-substrings",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Decode Ways",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "decode-ways",
+   "neetcode_slug": "decode-ways",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Coin Change",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "coin-change",
+   "neetcode_slug": "coin-change",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Maximum Product Subarray",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "maximum-product-subarray",
+   "neetcode_slug": "maximum-product-subarray",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Word Break",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "word-break",
+   "neetcode_slug": "word-break",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Longest Increasing Subsequence",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "longest-increasing-subsequence",
+   "neetcode_slug": "longest-increasing-subsequence",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Partition Equal Subset Sum",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "partition-equal-subset-sum",
+   "neetcode_slug": "partition-equal-subset-sum",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Combination Sum IV",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "combination-sum-iv",
+   "neetcode_slug": "combination-sum-iv",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Perfect Squares",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "perfect-squares",
+   "neetcode_slug": "perfect-squares",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Integer Break",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "integer-break",
+   "neetcode_slug": "integer-break",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Stone Game III",
+   "pattern": "1-D Dynamic Programming",
+   "difficulty": "Hard",
+   "leetcode_slug": "stone-game-iii",
+   "neetcode_slug": "stone-game-iii",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Unique Paths",
+   "pattern": "2-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "unique-paths",
+   "neetcode_slug": "count-paths",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Unique Paths II",
+   "pattern": "2-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "unique-paths-ii",
+   "neetcode_slug": "unique-paths-ii",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Minimum Path Sum",
+   "pattern": "2-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "minimum-path-sum",
+   "neetcode_slug": "minimum-path-sum",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Longest Common Subsequence",
+   "pattern": "2-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "longest-common-subsequence",
+   "neetcode_slug": "longest-common-subsequence",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Last Stone Weight II",
+   "pattern": "2-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "last-stone-weight-ii",
+   "neetcode_slug": "last-stone-weight-ii",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Best Time to Buy and Sell Stock with Cooldown",
+   "pattern": "2-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "best-time-to-buy-and-sell-stock-with-cooldown",
+   "neetcode_slug": "buy-and-sell-crypto-with-cooldown",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Coin Change II",
+   "pattern": "2-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "coin-change-ii",
+   "neetcode_slug": "coin-change-ii",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Target Sum",
+   "pattern": "2-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "target-sum",
+   "neetcode_slug": "target-sum",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Interleaving String",
+   "pattern": "2-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "interleaving-string",
+   "neetcode_slug": "interleaving-string",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Stone Game",
+   "pattern": "2-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "stone-game",
+   "neetcode_slug": "stone-game",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Stone Game II",
+   "pattern": "2-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "stone-game-ii",
+   "neetcode_slug": "stone-game-ii",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Longest Increasing Path in a Matrix",
+   "pattern": "2-D Dynamic Programming",
+   "difficulty": "Hard",
+   "leetcode_slug": "longest-increasing-path-in-a-matrix",
+   "neetcode_slug": "longest-increasing-path-in-matrix",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Distinct Subsequences",
+   "pattern": "2-D Dynamic Programming",
+   "difficulty": "Hard",
+   "leetcode_slug": "distinct-subsequences",
+   "neetcode_slug": "count-subsequences",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Edit Distance",
+   "pattern": "2-D Dynamic Programming",
+   "difficulty": "Medium",
+   "leetcode_slug": "edit-distance",
+   "neetcode_slug": "edit-distance",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Burst Balloons",
+   "pattern": "2-D Dynamic Programming",
+   "difficulty": "Hard",
+   "leetcode_slug": "burst-balloons",
+   "neetcode_slug": "burst-balloons",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Regular Expression Matching",
+   "pattern": "2-D Dynamic Programming",
+   "difficulty": "Hard",
+   "leetcode_slug": "regular-expression-matching",
+   "neetcode_slug": "regular-expression-matching",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Lemonade Change",
+   "pattern": "Greedy",
+   "difficulty": "Easy",
+   "leetcode_slug": "lemonade-change",
+   "neetcode_slug": "lemonade-change",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Maximum Subarray",
+   "pattern": "Greedy",
+   "difficulty": "Medium",
+   "leetcode_slug": "maximum-subarray",
+   "neetcode_slug": "maximum-subarray",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Maximum Sum Circular Subarray",
+   "pattern": "Greedy",
+   "difficulty": "Medium",
+   "leetcode_slug": "maximum-sum-circular-subarray",
+   "neetcode_slug": "maximum-sum-circular-subarray",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Longest Turbulent Subarray",
+   "pattern": "Greedy",
+   "difficulty": "Medium",
+   "leetcode_slug": "longest-turbulent-subarray",
+   "neetcode_slug": "longest-turbulent-subarray",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Jump Game",
+   "pattern": "Greedy",
+   "difficulty": "Medium",
+   "leetcode_slug": "jump-game",
+   "neetcode_slug": "jump-game",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Jump Game II",
+   "pattern": "Greedy",
+   "difficulty": "Medium",
+   "leetcode_slug": "jump-game-ii",
+   "neetcode_slug": "jump-game-ii",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Jump Game VII",
+   "pattern": "Greedy",
+   "difficulty": "Medium",
+   "leetcode_slug": "jump-game-vii",
+   "neetcode_slug": "jump-game-vii",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Gas Station",
+   "pattern": "Greedy",
+   "difficulty": "Medium",
+   "leetcode_slug": "gas-station",
+   "neetcode_slug": "gas-station",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Hand of Straights",
+   "pattern": "Greedy",
+   "difficulty": "Medium",
+   "leetcode_slug": "hand-of-straights",
+   "neetcode_slug": "hand-of-straights",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Dota2 Senate",
+   "pattern": "Greedy",
+   "difficulty": "Medium",
+   "leetcode_slug": "dota2-senate",
+   "neetcode_slug": "dota2-senate",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Merge Triplets to Form Target Triplet",
+   "pattern": "Greedy",
+   "difficulty": "Medium",
+   "leetcode_slug": "merge-triplets-to-form-target-triplet",
+   "neetcode_slug": "merge-triplets-to-form-target",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Partition Labels",
+   "pattern": "Greedy",
+   "difficulty": "Medium",
+   "leetcode_slug": "partition-labels",
+   "neetcode_slug": "partition-labels",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Valid Parenthesis String",
+   "pattern": "Greedy",
+   "difficulty": "Medium",
+   "leetcode_slug": "valid-parenthesis-string",
+   "neetcode_slug": "valid-parenthesis-string",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Candy",
+   "pattern": "Greedy",
+   "difficulty": "Hard",
+   "leetcode_slug": "candy",
+   "neetcode_slug": "candy",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Insert Interval",
+   "pattern": "Intervals",
+   "difficulty": "Medium",
+   "leetcode_slug": "insert-interval",
+   "neetcode_slug": "insert-new-interval",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Merge Intervals",
+   "pattern": "Intervals",
+   "difficulty": "Medium",
+   "leetcode_slug": "merge-intervals",
+   "neetcode_slug": "merge-intervals",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Non Overlapping Intervals",
+   "pattern": "Intervals",
+   "difficulty": "Medium",
+   "leetcode_slug": "non-overlapping-intervals",
+   "neetcode_slug": "non-overlapping-intervals",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Meeting Rooms",
+   "pattern": "Intervals",
+   "difficulty": "Easy",
+   "leetcode_slug": "meeting-rooms",
+   "neetcode_slug": "meeting-schedule",
+   "premium": true,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Meeting Rooms II",
+   "pattern": "Intervals",
+   "difficulty": "Medium",
+   "leetcode_slug": "meeting-rooms-ii",
+   "neetcode_slug": "meeting-schedule-ii",
+   "premium": true,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Meeting Rooms III",
+   "pattern": "Intervals",
+   "difficulty": "Hard",
+   "leetcode_slug": "meeting-rooms-iii",
+   "neetcode_slug": "meeting-rooms-iii",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Minimum Interval to Include Each Query",
+   "pattern": "Intervals",
+   "difficulty": "Hard",
+   "leetcode_slug": "minimum-interval-to-include-each-query",
+   "neetcode_slug": "minimum-interval-including-query",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Excel Sheet Column Title",
+   "pattern": "Math & Geometry",
+   "difficulty": "Easy",
+   "leetcode_slug": "excel-sheet-column-title",
+   "neetcode_slug": "excel-sheet-column-title",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Greatest Common Divisor of Strings",
+   "pattern": "Math & Geometry",
+   "difficulty": "Easy",
+   "leetcode_slug": "greatest-common-divisor-of-strings",
+   "neetcode_slug": "greatest-common-divisor-of-strings",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Insert Greatest Common Divisors in Linked List",
+   "pattern": "Math & Geometry",
+   "difficulty": "Medium",
+   "leetcode_slug": "insert-greatest-common-divisors-in-linked-list",
+   "neetcode_slug": "insert-greatest-common-divisors-in-linked-list",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Transpose Matrix",
+   "pattern": "Math & Geometry",
+   "difficulty": "Easy",
+   "leetcode_slug": "transpose-matrix",
+   "neetcode_slug": "transpose-matrix",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Rotate Image",
+   "pattern": "Math & Geometry",
+   "difficulty": "Medium",
+   "leetcode_slug": "rotate-image",
+   "neetcode_slug": "rotate-matrix",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Spiral Matrix",
+   "pattern": "Math & Geometry",
+   "difficulty": "Medium",
+   "leetcode_slug": "spiral-matrix",
+   "neetcode_slug": "spiral-matrix",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Set Matrix Zeroes",
+   "pattern": "Math & Geometry",
+   "difficulty": "Medium",
+   "leetcode_slug": "set-matrix-zeroes",
+   "neetcode_slug": "set-zeroes-in-matrix",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Happy Number",
+   "pattern": "Math & Geometry",
+   "difficulty": "Easy",
+   "leetcode_slug": "happy-number",
+   "neetcode_slug": "non-cyclical-number",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Plus One",
+   "pattern": "Math & Geometry",
+   "difficulty": "Easy",
+   "leetcode_slug": "plus-one",
+   "neetcode_slug": "plus-one",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Roman to Integer",
+   "pattern": "Math & Geometry",
+   "difficulty": "Easy",
+   "leetcode_slug": "roman-to-integer",
+   "neetcode_slug": "roman-to-integer",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Pow(x, n)",
+   "pattern": "Math & Geometry",
+   "difficulty": "Medium",
+   "leetcode_slug": "powx-n",
+   "neetcode_slug": "pow-x-n",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Multiply Strings",
+   "pattern": "Math & Geometry",
+   "difficulty": "Medium",
+   "leetcode_slug": "multiply-strings",
+   "neetcode_slug": "multiply-strings",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Detect Squares",
+   "pattern": "Math & Geometry",
+   "difficulty": "Medium",
+   "leetcode_slug": "detect-squares",
+   "neetcode_slug": "count-squares",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Single Number",
+   "pattern": "Bit Manipulation",
+   "difficulty": "Easy",
+   "leetcode_slug": "single-number",
+   "neetcode_slug": "single-number",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Number of 1 Bits",
+   "pattern": "Bit Manipulation",
+   "difficulty": "Easy",
+   "leetcode_slug": "number-of-1-bits",
+   "neetcode_slug": "number-of-one-bits",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Counting Bits",
+   "pattern": "Bit Manipulation",
+   "difficulty": "Easy",
+   "leetcode_slug": "counting-bits",
+   "neetcode_slug": "counting-bits",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Add Binary",
+   "pattern": "Bit Manipulation",
+   "difficulty": "Easy",
+   "leetcode_slug": "add-binary",
+   "neetcode_slug": "add-binary",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Reverse Bits",
+   "pattern": "Bit Manipulation",
+   "difficulty": "Easy",
+   "leetcode_slug": "reverse-bits",
+   "neetcode_slug": "reverse-bits",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Missing Number",
+   "pattern": "Bit Manipulation",
+   "difficulty": "Easy",
+   "leetcode_slug": "missing-number",
+   "neetcode_slug": "missing-number",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Sum of Two Integers",
+   "pattern": "Bit Manipulation",
+   "difficulty": "Medium",
+   "leetcode_slug": "sum-of-two-integers",
+   "neetcode_slug": "sum-of-two-integers",
+   "premium": false,
+   "lists": [
+    "blind75",
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Reverse Integer",
+   "pattern": "Bit Manipulation",
+   "difficulty": "Medium",
+   "leetcode_slug": "reverse-integer",
+   "neetcode_slug": "reverse-integer",
+   "premium": false,
+   "lists": [
+    "neetcode150",
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Bitwise and of Numbers Range",
+   "pattern": "Bit Manipulation",
+   "difficulty": "Medium",
+   "leetcode_slug": "bitwise-and-of-numbers-range",
+   "neetcode_slug": "bitwise-and-of-numbers-range",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  },
+  {
+   "name": "Minimum Array End",
+   "pattern": "Bit Manipulation",
+   "difficulty": "Medium",
+   "leetcode_slug": "minimum-array-end",
+   "neetcode_slug": "minimum-array-end",
+   "premium": false,
+   "lists": [
+    "neetcode250"
+   ]
+  }
+ ]
+}

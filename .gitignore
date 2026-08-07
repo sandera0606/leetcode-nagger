@@ -2,3 +2,9 @@
 __pycache__/
 *.pyc
 venv/
+.venv/
+
+# Your own filled-in tracker, if you keep a local copy. The blank templates
+# in templates/ are the ones that ship.
+leetcode-tracker.xlsx
+my-tracker.xlsx

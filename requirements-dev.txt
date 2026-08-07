@@ -1,0 +1,4 @@
+# Only needed to regenerate the tracker templates in `templates/`.
+#   python tools/make_template.py --all
+-r requirements.txt
+openpyxl>=3.1
