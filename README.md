@@ -54,16 +54,21 @@ Fork this, paste in a few secrets, edit one config file, done.
    copy**. That's your tracker — it lands in your own Drive, already filled in
    with the problem list and nothing else.
 
-   | List | Problems | Copy this |
-   |---|---|---|
-   | Blind 75 | 75 | [Open template →](REPLACE_WITH_YOUR_DRIVE_LINK) |
-   | NeetCode 150 | 150 | [Open template →](REPLACE_WITH_YOUR_DRIVE_LINK) |
-   | NeetCode 250 | 250 | [Open template →](REPLACE_WITH_YOUR_DRIVE_LINK) |
+   **→ [Google Sheets templates (Drive folder)](https://drive.google.com/drive/folders/1Nq8qU5llJRm0csHdbn77E94ya2Y4G1ma?usp=sharing)**
 
-   Prefer not to use someone else's Drive file? The same sheets are in
+   | List | Problems | Good for |
+   |---|---|---|
+   | Blind 75 | 75 | The classic starting point. ~3 months at 1/weekday. |
+   | NeetCode 150 | 150 | Blind 75 plus the gaps it leaves. |
+   | NeetCode 250 | 250 | Thorough. Everything in the 150, plus 100 more. |
+
+   You only get view access to those, which is the point — **File → Make a
+   copy** gives you your own editable one and leaves the original alone.
+
+   Prefer not to touch someone else's Drive? The same sheets are in
    `templates/` as `.xlsx` — upload one to Drive and it converts to a Google
-   Sheet, formatting and formulas intact. There's a `.csv` of each too, if you
-   'd rather File → Import into a sheet you already have.
+   Sheet, formatting and formulas intact. There's a `.csv` of each too, if
+   you'd rather File → Import into a sheet you already have.
 
    All three use a tab named `Tracker`, which is what `config.yml` expects out
    of the box, so switching lists later doesn't mean reconfiguring anything.
