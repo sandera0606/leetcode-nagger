@@ -43,6 +43,9 @@ class State:
         value = self.data.get("celebrated")
         return value if isinstance(value, list) else []
 
+    def celebrated_keys(self) -> list[str]:
+        return list(self._celebrated())
+
     def has_celebrated(self, key: str) -> bool:
         return key in self._celebrated()
 

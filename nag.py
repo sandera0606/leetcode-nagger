@@ -48,6 +48,29 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+# Celebration tiers, lowest first. Each fires at most once, and only if
+# nothing at or above it has already gone out — so a threshold you leapfrogged
+# stays skipped rather than lurking, and a drop in your percentage (which
+# happens the moment you add rows to the sheet) can't walk you back down
+# through congratulations you've already had.
+CELEBRATION_TIERS = [*(str(m) for m in MILESTONES), "all-cold", "complete"]
+
+
+def already_celebrated_at_or_above(state: State, list_key: str, tier: str) -> bool:
+    try:
+        floor = CELEBRATION_TIERS.index(tier)
+    except ValueError:
+        return False
+    prefix = f"{list_key}:"
+    for key in state.celebrated_keys():
+        if not key.startswith(prefix):
+            continue
+        suffix = key[len(prefix):]
+        if suffix in CELEBRATION_TIERS and CELEBRATION_TIERS.index(suffix) >= floor:
+            return True
+    return False
+
+
 def preview(report) -> None:
     print(f"\n--- {report.kind}: {report.title} ---")
     for section in report.sections:
@@ -99,27 +122,27 @@ def main() -> int:
     # lasts until the final review falls due, weeks later.
     celebration = None
     if status.complete:
-        celebration = (f"{cfg.list_key}:complete",
+        celebration = ("complete",
                        lambda: build_complete_report(status, url, cfg.list_name))
     elif status.all_cold_done:
-        celebration = (f"{cfg.list_key}:all-cold",
+        celebration = ("all-cold",
                        lambda: build_all_cold_report(status, url, cfg.list_name))
     else:
         reached = [m for m in MILESTONES if status.percent >= m]
         if reached:
             milestone = max(reached)
-            celebration = (f"{cfg.list_key}:{milestone}",
+            celebration = (str(milestone),
                            lambda: build_milestone_report(status, url, cfg.list_name, milestone))
 
     if celebration:
-        key, build = celebration
-        if not state.has_celebrated(key):
+        tier, build = celebration
+        if not already_celebrated_at_or_above(state, cfg.list_key, tier):
             report = build()
             if args.dry_run:
                 preview(report)
             results = notify.dispatch(report, cfg.channels, dry_run=args.dry_run)
             if notify.any_sent(results):
-                state.mark_celebrated(key)
+                state.mark_celebrated(f"{cfg.list_key}:{tier}")
                 state.save()
 
     if status.complete and cfg.stop_when_complete:

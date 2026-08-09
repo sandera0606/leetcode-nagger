@@ -27,6 +27,7 @@ from nagger.messages import (
     plain,
     unlink,
 )
+from nag import already_celebrated_at_or_above
 from nagger import notify, problems, sheets
 from nagger.state import State
 from nagger.notify import discord, mail
@@ -643,6 +644,68 @@ class TestServiceAccountValidation(unittest.TestCase):
         message = self.failure(
             '{"client_email":"a@b.com","token_uri":"https://x","private_key":""}')
         self.assertIn("private_key", message)
+
+
+class TestCelebrationLadder(unittest.TestCase):
+    """Tiers fire at most once, in order, and never regress.
+
+    Percentage is not monotonic: adding rows to the sheet drops it. Without a
+    floor, someone who has been congratulated at 75% gets "25% of Blind 75!"
+    the moment they paste in a longer list.
+    """
+
+    def setUp(self):
+        import tempfile
+        self.path = Path(tempfile.mkdtemp()) / "state.json"
+
+    def fires(self, tier: str) -> bool:
+        """Would this tier send, given what's on record?"""
+        state = State(self.path)
+        allowed = not already_celebrated_at_or_above(state, "blind75", tier)
+        if allowed:
+            state.mark_celebrated(f"blind75:{tier}")
+            state.save()
+        return allowed
+
+    def test_each_tier_fires_once(self):
+        for tier in ("25", "50", "75", "all-cold", "complete"):
+            self.assertTrue(self.fires(tier), tier)
+            self.assertFalse(self.fires(tier), f"{tier} fired twice")
+
+    def test_leapfrogging_skips_the_lower_tiers_permanently(self):
+        self.assertTrue(self.fires("75"))          # straight to 80% on run one
+        self.assertFalse(self.fires("25"))
+        self.assertFalse(self.fires("50"))
+
+    def test_percentage_dropping_does_not_replay_celebrations(self):
+        self.assertTrue(self.fires("75"))          # reached 80%
+        self.assertFalse(self.fires("25"))         # sheet doubled in size -> 40%
+        self.assertFalse(self.fires("50"))         # climbing back through 53%
+
+    def test_finishing_the_cold_attempts_buries_the_milestones(self):
+        self.assertTrue(self.fires("50"))
+        self.assertTrue(self.fires("all-cold"))    # jumped 60% -> every problem
+        self.assertFalse(self.fires("75"))         # skipped, and stays skipped
+
+    def test_complete_outranks_everything(self):
+        self.assertTrue(self.fires("complete"))
+        for tier in ("25", "50", "75", "all-cold"):
+            self.assertFalse(self.fires(tier), tier)
+
+    def test_a_higher_tier_still_fires_after_a_lower_one(self):
+        self.assertTrue(self.fires("50"))
+        self.assertTrue(self.fires("75"))          # 60% -> 80%, the common case
+
+    def test_other_lists_keep_their_own_ladder(self):
+        self.assertTrue(self.fires("complete"))
+        state = State(self.path)
+        self.assertFalse(already_celebrated_at_or_above(state, "neetcode150", "25"))
+
+    def test_unknown_keys_in_state_are_ignored(self):
+        state = State(self.path)
+        state.mark_celebrated("blind75:everything")
+        state.save()
+        self.assertTrue(self.fires("25"))
 
 
 class TestSheetsApiErrors(unittest.TestCase):
