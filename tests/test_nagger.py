@@ -5,6 +5,8 @@
 
 from __future__ import annotations
 
+import contextlib
+import io
 import os
 import sys
 import unittest
@@ -430,6 +432,14 @@ class TestDispatch(unittest.TestCase):
     """One misconfigured channel must never take the others down."""
 
     def setUp(self):
+        # dispatch narrates each channel's outcome. Under `unittest discover`
+        # that lands in the terminal as "discord: sent", which reads like the
+        # suite just messaged someone.
+        quiet = contextlib.ExitStack()
+        sink = io.StringIO()
+        quiet.enter_context(contextlib.redirect_stdout(sink))
+        quiet.enter_context(contextlib.redirect_stderr(sink))
+        self.addCleanup(quiet.close)
         self._env = dict(os.environ)
         for key in ("EMAIL_TO", "GMAIL_ADDRESS", "GMAIL_APP_PASSWORD",
                     "DISCORD_WEBHOOK_URL"):
