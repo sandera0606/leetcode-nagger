@@ -6,7 +6,7 @@ import json
 import urllib.request
 
 from ..config import env
-from ..messages import Report
+from ..messages import Report, unlink
 
 
 def configured() -> bool:
@@ -25,7 +25,9 @@ def send(report: Report, mention: bool) -> None:
         "color": report.color,
         # Discord caps a field value at 1024 chars.
         "fields": [
-            {"name": s.title[:256], "value": s.body[:1024], "inline": False}
+            # Masked links would eat into the 1024-char field cap for a
+            # channel that already deep-links from the embed title.
+            {"name": s.title[:256], "value": unlink(s.body)[:1024], "inline": False}
             for s in report.sections
         ],
         "footer": {"text": report.footer},

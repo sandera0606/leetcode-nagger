@@ -14,7 +14,7 @@ from email.message import EmailMessage
 from email.utils import formataddr
 
 from ..config import env
-from ..messages import Report, plain
+from ..messages import LINK_RE, Report, plain
 
 DEFAULT_HOST = "smtp.gmail.com"
 DEFAULT_PORT = 587
@@ -37,17 +37,12 @@ def credentials() -> tuple[str, str, str, int]:
     return user, password, host, port
 
 
-def configured() -> bool:
-    """Credentials only — the SMS carrier gateway borrows these without EMAIL_TO."""
-    return bool(env("GMAIL_ADDRESS") and env("GMAIL_APP_PASSWORD"))
-
-
 def configured_for_email() -> bool:
-    return configured() and bool(env("EMAIL_TO"))
+    return bool(env("GMAIL_ADDRESS") and env("GMAIL_APP_PASSWORD") and env("EMAIL_TO"))
 
 
 def deliver(to: list[str], subject: str, text: str, html: str | None = None) -> None:
-    """Low-level send. Also used by the carrier-gateway SMS channel."""
+    """Low-level send."""
     user, password, host, port = credentials()
 
     msg = EmailMessage()
@@ -116,11 +111,17 @@ def _escape(text: str) -> str:
 
 
 def _inline(text: str) -> str:
-    """Escape, then turn the light markdown into HTML."""
+    """Escape, then turn the light markdown into HTML.
+
+    Links go last: the bold and italic patterns would otherwise chew on the
+    href. Problem names carry a link to their neetcode.io page so the email is
+    one tap from the problem, not just from the tracker.
+    """
     out = _escape(text)
     out = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", out)
     out = re.sub(r"_(.+?)_", r"<em>\1</em>", out)
-    return out
+    return LINK_RE.sub(
+        r'<a href="\2" style="color:#2563EB;text-decoration:none;">\1</a>', out)
 
 
 def send(report: Report, subject_prefix: str) -> None:

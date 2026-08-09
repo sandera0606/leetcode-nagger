@@ -76,6 +76,7 @@ class Status:
     """Everything the message layer needs, already decided."""
     today: date
     is_solve_day: bool
+    is_review_day: bool
     total: int
     solved: int
     remaining: int
@@ -88,6 +89,7 @@ class Status:
     streak: int
     all_cold_done: bool
     all_reviews_done: bool
+    pending_reviews: int = 0
 
     @property
     def has_overdue(self) -> bool:
@@ -258,12 +260,14 @@ def build_status(problems: list[ProblemRow], today: date, cfg: Config) -> Status
     solved = len(solved_names)
     remaining = total - solved
     is_solve_day = schedule.is_solve_day(today)
+    is_review_day = schedule.is_review_day(today)
     quota = schedule.problems_per_day
     needs_new = is_solve_day and remaining > 0 and done_today < quota
 
     return Status(
         today=today,
         is_solve_day=is_solve_day,
+        is_review_day=is_review_day,
         total=total,
         solved=solved,
         remaining=remaining,
@@ -276,4 +280,5 @@ def build_status(problems: list[ProblemRow], today: date, cfg: Config) -> Status
         streak=compute_streak(problems, today, schedule),
         all_cold_done=total > 0 and remaining == 0,
         all_reviews_done=pending_reviews == 0,
+        pending_reviews=pending_reviews,
     )

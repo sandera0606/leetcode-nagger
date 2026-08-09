@@ -1,7 +1,7 @@
 # leetcode-nagger
 
 A cron job that reads your LeetCode tracker out of Google Sheets and nags you
-— on Discord, by email, by SMS — when you're behind on new problems or on
+— on Discord or by email — when you're behind on new problems or on
 spaced-repetition reviews.
 
 You keep your progress in a Google Sheet, which you were going to do anyway.
@@ -37,7 +37,6 @@ Fork this, paste in a few secrets, edit one config file, done.
 - [Notification channels](#notification-channels)
   - [Discord](#discord)
   - [Email (Gmail)](#email-gmail)
-  - [SMS](#sms)
 - [Secrets reference](#secrets-reference)
 - [Running it on GitHub Actions](#running-it-on-github-actions)
 - [How it decides what to say](#how-it-decides-what-to-say)
@@ -77,7 +76,7 @@ Fork this, paste in a few secrets, edit one config file, done.
    its key JSON in a secret, and share the sheet with its email — full steps
    in [Secrets reference](#secrets-reference).
 
-4. **Pick your channels.** Discord, email, SMS, or all three. Each one needs
+4. **Pick your channels.** Discord, email, or both. Each one needs
    a couple of secrets; see [Notification channels](#notification-channels).
 
 5. **Edit `config.yml`** — how often you want to be nagged, at what time, in
@@ -145,12 +144,11 @@ sheet:
   tab: Tracker             # tab name; blank = first tab
 
 schedule:
-  cadence: weekdays        # daily | weekdays | no_sundays | custom
-  days: [mon, tue, wed, thu, fri]   # only used by cadence: custom
+  solve_days: [mon, tue, wed, thu, fri]   # or a preset: weekdays
+  review_days: [sun]       # omit for every non-solve day; [] for never
   problems_per_day: 1
   timezone: America/New_York
   nag_hour: 19             # 0–23, local to `timezone`
-  rest_day_review: true    # nudge you to re-read notes on non-solve days
 
 review:
   enabled: true
@@ -162,21 +160,31 @@ stop_when_complete: true   # go quiet once the whole list is done
 channels:
   discord: { enabled: true, mention: true }
   email:   { enabled: false, subject_prefix: "[LeetCode]" }
-  sms:     { enabled: false, provider: carrier_gateway, carrier: verizon }
 ```
 
-### Cadence
+### Solve days and review days
 
-| `cadence` | You're expected to solve on |
-|---|---|
-| `daily` | every day |
-| `weekdays` | Mon–Fri |
-| `no_sundays` | Mon–Sat |
-| `custom` | whatever you list in `days:` |
+Two independent sets of days, each written either as a list or as a preset:
 
-Days that aren't solve days are **rest days**. On a rest day the bot doesn't
-ask for a new problem; if `rest_day_review: true` it reminds you to re-read
-your notes instead. Overdue reviews get through on any day.
+```yaml
+schedule:
+  solve_days:  [mon, tue, wed, thu, fri]   # or: weekdays
+  review_days: [sun]                        # or: weekends, or [] for never
+```
+
+Presets are `daily`, `weekdays`, `weekends`, `no_sundays`, and `none`.
+
+- **`solve_days`** — the bot asks for a new cold attempt, and these are the
+  days your streak is counted over. Rest days are skipped, not streak-breaking.
+- **`review_days`** — the bot tells you to re-read your notes. **Leave it out
+  and it's every day you aren't solving**, which is what most people want.
+
+They're independent, so a day can be both: on `solve_days: daily` you can
+still have `review_days: [sun]` and get a notes nudge on Sunday alongside the
+usual ask. If a day is both and you owe a new problem, the new problem wins.
+
+Overdue spaced-repetition reviews are separate from all of this and get
+through on **any** day, whatever these two are set to.
 
 `problems_per_day` raises the bar: set it to `2` and a day only counts once
 two cold attempts are logged with that date.
@@ -216,7 +224,7 @@ to `false` to keep the review nagging going forever.
 ## Notification channels
 
 Turn on as many as you like in `config.yml`. Each sends independently — a
-broken SMS gateway won't cost you the Discord ping.
+wrong Gmail app password won't cost you the Discord ping.
 
 ### Discord
 
@@ -246,28 +254,6 @@ Not a Gmail user? Set `SMTP_HOST` and `SMTP_PORT` to your provider's server —
 ports 587 (STARTTLS) and 465 (SSL) are both handled — and put your username
 and password in `GMAIL_ADDRESS` / `GMAIL_APP_PASSWORD` anyway.
 
-### SMS
-
-A single short line: what's due, your progress, your streak. Two ways to send it.
-
-**`provider: carrier_gateway`** — free. Most North American carriers turn an
-email to `5551234567@gateway` into a text. It reuses the Gmail credentials
-above, so set those up first. Set `carrier:` to one of:
-
-| | |
-|---|---|
-| **US** | `att` `boost` `cricket` `googlefi` `metropcs` `mint` `sprint` `tmobile` `uscellular` `verizon` `visible` `xfinity` |
-| **Canada** | `bell` `fido` `freedom` `koodo` `rogers` `telus` `virgin` |
-
-Delivery is best-effort and unmetered, and some carriers have quietly retired
-their gateway. If texts stop showing up, switch to Twilio.
-
-**`provider: twilio`** — paid, but reliable and works worldwide. Get an
-account, buy a number, then set `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` and
-`TWILIO_FROM`.
-
-Either way, `SMS_TO` is your number.
-
 ---
 
 ## Secrets reference
@@ -282,12 +268,10 @@ secret**, one per name. Same names in both places.
 | `SHEET_ID` | always | The long id in your sheet's URL, between `/d/` and `/edit` |
 | `DISCORD_WEBHOOK_URL` | Discord | Channel Settings → Integrations → Webhooks |
 | `DISCORD_USER_ID` | Discord | Your user id, so nags ping you |
-| `GMAIL_ADDRESS` | email, SMS gateway | The account nags are sent *from* |
-| `GMAIL_APP_PASSWORD` | email, SMS gateway | A Google App Password |
+| `GMAIL_ADDRESS` | email | The account nags are sent *from* |
+| `GMAIL_APP_PASSWORD` | email | A Google App Password |
 | `EMAIL_TO` | email | Where nags go |
 | `SMTP_HOST`, `SMTP_PORT` | non-Gmail SMTP | Defaults to `smtp.gmail.com:587` |
-| `SMS_TO` | SMS | Your mobile number |
-| `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM` | Twilio SMS | From the Twilio console |
 
 ### Getting `GOOGLE_SERVICE_ACCOUNT_JSON`
 
@@ -300,7 +284,19 @@ password.
    anything. No roles needed.
 3. Open it → **Keys → Add Key → Create new key → JSON.** A file downloads.
 4. Paste the **entire file contents**, braces included, as the value of the
-   `GOOGLE_SERVICE_ACCOUNT_JSON` secret.
+   `GOOGLE_SERVICE_ACCOUNT_JSON` secret. In `.env` that value spans many
+   lines, so it has to be wrapped in single quotes — without them only the
+   first line is read and you get a half-loaded credential:
+
+   ```sh
+   GOOGLE_SERVICE_ACCOUNT_JSON='{
+     "type": "service_account",
+     "project_id": "...",
+     ...
+   }'
+   ```
+
+   In GitHub Actions Secrets no quoting is needed — paste the raw file.
 5. Copy the service account's `client_email` (it looks like
    `something@your-project.iam.gserviceaccount.com`), then in your sheet click
    **Share**, paste it, and give it **Viewer**. Without this step the bot gets
@@ -345,25 +341,35 @@ Every run:
    `first_days`, or a first review with no second review older than
    `second_days - first_days`.
 4. Computes the streak: consecutive **solve days**, walking backwards, where
-   you logged at least `problems_per_day`. Rest days are skipped, not broken.
+   you logged at least `problems_per_day`. Non-solve days are skipped, not
+   broken.
    Today doesn't count against you until you've done it.
 5. Sends at most one nag per day, containing whichever of these apply:
    - **new problem due** — a solve day, quota not met, problems remaining
    - **overdue reviews** — always, any day
-   - **rest day nudge** — re-read your notes on what you've solved so far
+   - **review-day nudge** — re-read your notes on what you've solved so far
    - nothing applies → nothing is sent. Quiet days are the point.
 
-Separately, and silently (no @-mention), it celebrates at 25%, 50% and 75% of
-the list, and once more when you finish it. Those fire once each; `state.json`
-remembers which have gone out.
+Separately, and silently (no @-mention), it celebrates:
+
+- **25%, 50% and 75%** of the list cold-attempted
+- **every problem cold-attempted**, with reviews still outstanding — a stretch
+  everyone passes through, since the last problem's second review isn't due
+  until weeks after you solve it
+- **finished** — every problem attempted and every review logged
+
+Each fires once; `state.json` remembers which have gone out. After the last
+one, `stop_when_complete: true` retires the bot for good.
 
 ---
 
 ## Local development
 
 ```sh
+python -m venv venv
+source venv/bin/activate          # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env      # then fill it in
+cp .env.example .env              # then fill it in
 
 python nag.py --dry-run --force   # print what it would send, send nothing
 python nag.py --test              # actually send, even if nothing is due
@@ -402,16 +408,24 @@ tab is missing one of the four required columns (`Problem`, `Cold ✓ (date)`,
 Tab names are case- and space-sensitive.
 
 **403 from Google** — you didn't share the sheet with the service account's
-`client_email`, or the Sheets API isn't enabled on the project.
+`client_email`, or the Sheets API isn't enabled on the project. The error
+prints the exact address to paste into the Share dialog.
+
+**"GOOGLE_SERVICE_ACCOUNT_JSON parsed, but it's missing…"** — only part of the
+key file made it into the variable. In `.env` the value must be wrapped in
+single quotes so the multi-line JSON survives; without them only the first
+line is read. Re-paste the whole file. This also fires if the placeholder from
+`.env.example` is still in place.
+
+**`ModuleNotFoundError: No module named 'dotenv'`** — you're running the
+system Python instead of the virtualenv you installed into. Activate it
+(`venv\Scripts\activate` on Windows, `source venv/bin/activate` elsewhere) or
+call it directly: `venv/Scripts/python nag.py --dry-run`.
 
 **Discord 403** — the webhook URL is wrong or the webhook was deleted.
 
 **Gmail "Username and Password not accepted"** — you used your account
 password instead of an App Password, or 2-Step Verification isn't on.
-
-**No SMS arriving** — carrier gateways fail silently. Confirm the email
-channel works first (same credentials), check the carrier is right, then
-switch to Twilio if it still doesn't land.
 
 **Nothing happens at all** — check the Actions tab. Forks have workflows
 disabled until you click through the banner enabling them, and scheduled runs
@@ -434,7 +448,7 @@ nagger/
   tracker.py            parses rows; works out what's due, overdue, streak
   messages.py           copy pools; builds the channel-agnostic report
   state.py              once-a-day and once-per-milestone dedup
-  notify/               discord.py · mail.py · sms.py
+  notify/               discord.py · mail.py
 data/problems.json      the three problem lists, merged
 templates/              blank tracker sheets, .xlsx and .csv
 tools/                  regenerate the data and the templates

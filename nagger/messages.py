@@ -1,8 +1,8 @@
 """Copy pools and the channel-agnostic report the notifiers render.
 
 `build_report` turns a `Status` into a `Report`: a title, a handful of
-sections, a footer, and a pre-squeezed SMS line. Each notifier renders that
-however its medium wants — rich embed, HTML email, or 300 characters.
+sections, and a footer. Each notifier renders that however its medium wants —
+a rich embed, or an HTML email.
 
 Light markdown (`**bold**`) is used in section lines; `plain()` strips it for
 the media that can't show it.
@@ -15,6 +15,7 @@ import re
 from dataclasses import dataclass, field
 from datetime import date
 
+from . import problems
 from .tracker import Status
 
 MAX_LISTED = 25       # a nag longer than this stops being read
@@ -124,6 +125,21 @@ MILESTONE_FOOTERS = [
     "No ping. You've earned the quiet.",
 ]
 
+ALL_COLD_TITLES = [
+    "All {total} problems cold-attempted. Now the reviews.",
+    "{list_name}: every problem attempted once. Once isn't enough.",
+    "{total}/{total} cold-attempted. Spaced repetition says: not so fast.",
+    "You've touched all {total}. Reviews are the other half.",
+    "Every problem in {list_name}, done once. Halfway, really.",
+]
+
+ALL_COLD_FOOTERS = [
+    "Reviews are where it actually sticks.",
+    "The fun part's done. The useful part isn't.",
+    "Finish the reviews and I'll leave you alone for good.",
+    "Don't stall at the finish line.",
+]
+
 COMPLETE_TITLES = [
     "{list_name}: complete. Every problem, every review.",
     "You finished {list_name}. Genuinely, well done.",
@@ -143,8 +159,24 @@ def pick(pool: list[str], **kw: object) -> str:
     return random.choice(pool).format(**kw)
 
 
+# Masked links, the one piece of markdown Discord and email both understand.
+LINK_RE = re.compile(r"\[([^\]]+)\]\((https?://[^)\s]+)\)")
+
+
+def unlink(text: str) -> str:
+    """`[Two Sum](url)` -> `Two Sum`, for media that can't show a link."""
+    return LINK_RE.sub(r"\1", text)
+
+
+def linked(name: str) -> str:
+    """Wrap a problem name in a link to its neetcode.io page, if we know it."""
+    url = problems.url_for(name)
+    return f"[{name}]({url})" if url else name
+
+
 def plain(text: str) -> str:
     """Strip the light markdown used in section lines."""
+    text = unlink(text)
     text = re.sub(r"\*\*(.+?)\*\*", r"\1", text)
     return re.sub(r"_(.+?)_", r"\1", text)
 
@@ -168,7 +200,6 @@ class Report:
     footer: str
     url: str
     day: date
-    sms: str
     color: int
     mention: bool
 
@@ -190,32 +221,18 @@ def _listing(items, formatter, used: int = 0) -> list[str]:
         if len(lines) >= MAX_LISTED:
             break
         line = formatter(item)
-        if budget - len(line) - 1 < 0:
+        # Charge for what the tightest medium actually renders. Discord drops
+        # the URL half of a masked link, so billing the full markdown would
+        # shrink everyone's list to protect a limit that isn't being neared.
+        cost = len(unlink(line))
+        if budget - cost - 1 < 0:
             break
         lines.append(line)
-        budget -= len(line) + 1
+        budget -= cost + 1
     extra = len(items) - len(lines)
     if extra > 0:
         lines.append(f"_…and {extra} more_")
     return lines
-
-
-def _sms_line(status: Status, cfg_list_name: str) -> str:
-    bits = []
-    if status.needs_new:
-        left = status.quota - status.done_today
-        bits.append(f"{left} new cold attempt{'s' if left != 1 else ''} due")
-    if status.overdue_first:
-        bits.append(f"{len(status.overdue_first)} 1st review(s) overdue")
-    if status.overdue_second:
-        bits.append(f"{len(status.overdue_second)} 2nd review(s) overdue")
-    if not bits and not status.is_solve_day:
-        bits.append(f"rest day — re-read notes on {status.solved} problem(s)")
-    headline = "; ".join(bits) or "nothing due"
-    tail = f" {status.solved}/{status.total} done"
-    if status.streak:
-        tail += f", {status.streak}d streak"
-    return f"LeetCode: {headline}.{tail}."[:300]
 
 
 def build_report(status: Status, url: str, list_name: str, mention: bool) -> Report:
@@ -240,14 +257,15 @@ def build_report(status: Status, url: str, list_name: str, mention: bool) -> Rep
             detail,
             f"**{left}** to go · **{status.remaining}** left in {list_name}.",
         ]))
-    elif not status.is_solve_day:
+    elif status.is_review_day:
         if status.solved_names:
             subtitle = pick(REST_DAY_SUBTITLES, n=status.solved)
             sections.append(Section(
                 "rest",
                 pick(REST_DAY_TITLES, day=day_name),
                 [subtitle] + _listing(
-                    status.solved_names, lambda n: f"• {n}", used=len(subtitle) + 1),
+                    status.solved_names, lambda n: f"• {linked(n)}",
+                    used=len(subtitle) + 1),
             ))
         else:
             sections.append(Section(
@@ -266,7 +284,7 @@ def build_report(status: Status, url: str, list_name: str, mention: bool) -> Rep
             kind,
             pick(pool, n=len(items)),
             _listing(items, lambda d: (
-                f"• **{d.problem}**"
+                f"• **{linked(d.problem)}**"
                 + (f" _({d.difficulty})_" if d.difficulty else "")
                 + f" — **{d.days_overdue}d overdue**"
             )),
@@ -286,7 +304,6 @@ def build_report(status: Status, url: str, list_name: str, mention: bool) -> Rep
         footer=pick(FOOTER_LINES),
         url=url,
         day=status.today,
-        sms=_sms_line(status, list_name),
         color=color,
         mention=mention,
     )
@@ -303,7 +320,29 @@ def build_milestone_report(status: Status, url: str, list_name: str, pct: int) -
         footer=pick(MILESTONE_FOOTERS),
         url=url,
         day=status.today,
-        sms=f"LeetCode: {pct}% of {list_name} done ({status.solved}/{status.total}). Nice.",
+        color=COLORS["congrats"],
+        mention=False,  # celebrations shouldn't buzz your phone
+    )
+
+
+def build_all_cold_report(status: Status, url: str, list_name: str) -> Report:
+    """Every problem attempted, reviews still outstanding.
+
+    This window is guaranteed for everyone — the last problem's second review
+    falls due weeks after its cold attempt — so it gets its own message rather
+    than being lumped in with the percentage milestones.
+    """
+    left = status.pending_reviews
+    return Report(
+        kind="all-cold",
+        title=pick(ALL_COLD_TITLES, list_name=list_name, total=status.total),
+        sections=[Section("congrats", "Progress", [
+            f"**{status.total}/{status.total}** problems cold-attempted.",
+            f"**{left}** review(s) still to log.",
+        ])],
+        footer=pick(ALL_COLD_FOOTERS),
+        url=url,
+        day=status.today,
         color=COLORS["congrats"],
         mention=False,  # celebrations shouldn't buzz your phone
     )
@@ -320,8 +359,6 @@ def build_complete_report(status: Status, url: str, list_name: str) -> Report:
         footer=pick(COMPLETE_FOOTERS),
         url=url,
         day=status.today,
-        sms=f"LeetCode: {list_name} complete — all {status.total} problems and "
-            f"every review. Done.",
         color=COLORS["congrats"],
         mention=False,
     )

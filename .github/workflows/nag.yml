@@ -90,11 +90,6 @@ jobs:
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          # SMS
-          SMS_TO: ${{ secrets.SMS_TO }}
-          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
-          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
-          TWILIO_FROM: ${{ secrets.TWILIO_FROM }}
 
       # Runs even if the send partly failed, so a successful channel still
       # records its state and doesn't re-fire tomorrow's message twice.

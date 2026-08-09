@@ -8,3 +8,6 @@ venv/
 # in templates/ are the ones that ship.
 leetcode-tracker.xlsx
 my-tracker.xlsx
+
+# pytest scratch
+.pytest_cache/

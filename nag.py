@@ -22,7 +22,13 @@ from dotenv import load_dotenv
 
 from nagger import notify, sheets
 from nagger.config import env, load_config
-from nagger.messages import MILESTONES, build_complete_report, build_milestone_report, build_report
+from nagger.messages import (
+    MILESTONES,
+    build_all_cold_report,
+    build_complete_report,
+    build_milestone_report,
+    build_report,
+)
 from nagger.state import State
 from nagger.tracker import build_status, find_header, parse_rows
 
@@ -49,7 +55,6 @@ def preview(report) -> None:
         for line in section.lines:
             print(f"  {line}")
     print(f"\n{report.footer}")
-    print(f"SMS: {report.sms}")
     print(f"URL: {report.url}\n")
 
 
@@ -88,37 +93,42 @@ def main() -> int:
     exit_code = 0
 
     # ---- celebrations (silent, deduped, independent of the nag) ---------
+    # Most specific first. `all_cold_done` has to sit between the other two:
+    # at 100% solved every milestone threshold matches, so without it the bot
+    # congratulates you on 75% while the body reads 75/75 — and that window
+    # lasts until the final review falls due, weeks later.
+    celebration = None
     if status.complete:
-        key = f"{cfg.list_key}:complete"
+        celebration = (f"{cfg.list_key}:complete",
+                       lambda: build_complete_report(status, url, cfg.list_name))
+    elif status.all_cold_done:
+        celebration = (f"{cfg.list_key}:all-cold",
+                       lambda: build_all_cold_report(status, url, cfg.list_name))
+    else:
+        reached = [m for m in MILESTONES if status.percent >= m]
+        if reached:
+            milestone = max(reached)
+            celebration = (f"{cfg.list_key}:{milestone}",
+                           lambda: build_milestone_report(status, url, cfg.list_name, milestone))
+
+    if celebration:
+        key, build = celebration
         if not state.has_celebrated(key):
-            report = build_complete_report(status, url, cfg.list_name)
+            report = build()
             if args.dry_run:
                 preview(report)
             results = notify.dispatch(report, cfg.channels, dry_run=args.dry_run)
             if notify.any_sent(results):
                 state.mark_celebrated(key)
                 state.save()
-    else:
-        reached = [m for m in MILESTONES if status.percent >= m]
-        if reached:
-            milestone = max(reached)
-            key = f"{cfg.list_key}:{milestone}"
-            if not state.has_celebrated(key):
-                report = build_milestone_report(status, url, cfg.list_name, milestone)
-                if args.dry_run:
-                    preview(report)
-                results = notify.dispatch(report, cfg.channels, dry_run=args.dry_run)
-                if notify.any_sent(results):
-                    state.mark_celebrated(key)
-                    state.save()
 
     if status.complete and cfg.stop_when_complete:
         print(f"{cfg.list_name} is finished. Nothing left to nag about.")
         return exit_code
 
     # ---- the nag ---------------------------------------------------------
-    rest_day_nudge = not status.is_solve_day and cfg.schedule.rest_day_review
-    if not (status.needs_new or status.has_overdue or rest_day_nudge or args.test):
+    review_nudge = status.is_review_day
+    if not (status.needs_new or status.has_overdue or review_nudge or args.test):
         print("All clear. Nothing to nag about.")
         return exit_code
 

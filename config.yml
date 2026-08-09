@@ -14,15 +14,15 @@ sheet:
   tab: Tracker
 
 schedule:
-  # How often you're expected to do new problems:
-  #   daily       — every day, all 7
-  #   weekdays    — Mon–Fri
-  #   no_sundays  — Mon–Sat
-  #   custom      — whatever you list under `days` below
-  cadence: weekdays
+  # Days you're expected to do a new problem. Either list them, or use a
+  # preset: daily | weekdays | weekends | no_sundays | none
+  solve_days: [mon, tue, wed, thu, fri]
 
-  # Days for `cadence: custom`. Ignored otherwise.
-  days: [mon, tue, wed, thu, fri]
+  # Days you get the "go re-read your notes" nudge. Takes the same two forms.
+  # Leave this out entirely and it's every day you aren't solving. Set it to
+  # [] to never send one. It's independent of solve_days, so a day can be
+  # both — you can solve daily and still get a notes nudge on Sundays.
+  review_days: [sun]
 
   # New cold attempts expected on each solve day.
   problems_per_day: 1
@@ -33,11 +33,6 @@ schedule:
   # read this file.
   timezone: America/New_York
   nag_hour: 19
-
-  # On non-solve days, send a "go re-read your notes" nudge instead of
-  # asking for a new problem. Set false to stay silent on rest days
-  # (overdue reviews still get through either way).
-  rest_day_review: true
 
 review:
   # Spaced repetition, in days after the cold attempt.
@@ -60,15 +55,5 @@ channels:
     mention: true
 
   email:
-    enabled: false
+    enabled: true
     subject_prefix: "[LeetCode]"
-
-  sms:
-    enabled: false
-    # carrier_gateway — free, sends an email to your carrier's SMS gateway.
-    #                   Set `carrier` below. Needs the same Gmail creds as
-    #                   the email channel (it goes out over SMTP).
-    # twilio          — paid, needs TWILIO_* env vars.
-    provider: carrier_gateway
-    # See the carrier table in the README for supported values.
-    carrier: verizon

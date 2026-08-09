@@ -1,8 +1,8 @@
 """Fan a report out to every enabled channel.
 
-One failing channel never stops the others — a dead Twilio balance shouldn't
-cost you the Discord ping. `dispatch` returns the per-channel outcome and the
-caller decides what a failure means for the exit code.
+One failing channel never stops the others — an expired Gmail app password
+shouldn't cost you the Discord ping. `dispatch` returns the per-channel
+outcome and the caller decides what a failure means for the exit code.
 """
 
 from __future__ import annotations
@@ -11,7 +11,7 @@ import sys
 
 from ..config import Channels
 from ..messages import Report
-from . import discord, mail, sms
+from . import discord, mail
 
 
 def dispatch(report: Report, channels: Channels, *, dry_run: bool = False) -> dict[str, str]:
@@ -32,13 +32,6 @@ def dispatch(report: Report, channels: Channels, *, dry_run: bool = False) -> di
             mail.configured_for_email,
             lambda: mail.send(report, channels.email.subject_prefix),
             "GMAIL_ADDRESS / GMAIL_APP_PASSWORD / EMAIL_TO are not all set",
-        ))
-    if channels.sms.enabled:
-        senders.append((
-            "sms",
-            lambda: sms.configured(channels.sms),
-            lambda: sms.send(report, channels.sms),
-            "SMS_TO (and the provider's credentials) are not set",
         ))
 
     for name, is_configured, send, missing in senders:

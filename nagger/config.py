@@ -2,7 +2,7 @@
 
 Behaviour lives here; secrets and anything that identifies you live in the
 environment (see `nagger.notify`). Validation is deliberately noisy — a fork
-with a typo'd cadence should fail on the first run, not silently nag on the
+with a typo'd schedule should fail on the first run, not silently nag on the
 wrong days.
 """
 
@@ -30,39 +30,16 @@ WEEKDAY_NAMES = {
     "friday": 4, "saturday": 5, "sunday": 6,
 }
 
-CADENCE_DAYS = {
+# Shorthand for the common shapes. Anywhere a preset is accepted, an explicit
+# list of days is too — `weekdays` and `[mon, tue, wed, thu, fri]` are the same
+# setting written two ways.
+DAY_PRESETS = {
     "daily": {0, 1, 2, 3, 4, 5, 6},
     "weekdays": {0, 1, 2, 3, 4},
+    "weekends": {5, 6},
     "no_sundays": {0, 1, 2, 3, 4, 5},
+    "none": set(),
 }
-
-SMS_PROVIDERS = ("carrier_gateway", "twilio")
-
-# number@gateway delivers a free SMS on most North American carriers.
-CARRIER_GATEWAYS = {
-    # US
-    "att": "txt.att.net",
-    "boost": "sms.myboostmobile.com",
-    "cricket": "sms.cricketwireless.net",
-    "googlefi": "msg.fi.google.com",
-    "metropcs": "mymetropcs.com",
-    "mint": "mailmymobile.net",
-    "sprint": "messaging.sprintpcs.com",
-    "tmobile": "tmomail.net",
-    "uscellular": "email.uscc.net",
-    "verizon": "vtext.com",
-    "visible": "vtext.com",
-    "xfinity": "vtext.com",
-    # Canada
-    "bell": "txt.bell.ca",
-    "fido": "fido.ca",
-    "freedom": "txt.freedommobile.ca",
-    "koodo": "msg.telus.com",
-    "rogers": "pcs.rogers.com",
-    "telus": "msg.telus.com",
-    "virgin": "vmobile.ca",
-}
-
 
 class ConfigError(SystemExit):
     def __init__(self, message: str) -> None:
@@ -71,15 +48,17 @@ class ConfigError(SystemExit):
 
 @dataclass(frozen=True)
 class Schedule:
-    cadence: str
     solve_days: frozenset[int]
+    review_days: frozenset[int]
     problems_per_day: int
     timezone: str
     nag_hour: int
-    rest_day_review: bool
 
     def is_solve_day(self, day) -> bool:
         return day.weekday() in self.solve_days
+
+    def is_review_day(self, day) -> bool:
+        return day.weekday() in self.review_days
 
 
 @dataclass(frozen=True)
@@ -107,25 +86,13 @@ class EmailConfig:
 
 
 @dataclass(frozen=True)
-class SmsConfig:
-    enabled: bool
-    provider: str
-    carrier: str
-
-    @property
-    def gateway(self) -> str:
-        return CARRIER_GATEWAYS[self.carrier]
-
-
-@dataclass(frozen=True)
 class Channels:
     discord: DiscordConfig
     email: EmailConfig
-    sms: SmsConfig
 
     @property
     def any_enabled(self) -> bool:
-        return self.discord.enabled or self.email.enabled or self.sms.enabled
+        return self.discord.enabled or self.email.enabled
 
 
 @dataclass(frozen=True)
@@ -166,24 +133,28 @@ def _int(data: dict, key: str, default: int, where: str, lo: int, hi: int) -> in
     return value
 
 
-def _solve_days(sched: dict) -> tuple[str, frozenset[int]]:
-    cadence = str(sched.get("cadence", "weekdays")).strip().lower()
-    if cadence in CADENCE_DAYS:
-        return cadence, frozenset(CADENCE_DAYS[cadence])
-    if cadence != "custom":
-        options = ", ".join([*CADENCE_DAYS, "custom"])
-        raise ConfigError(f"`schedule.cadence:` must be one of {options}, got {cadence!r}.")
-
-    raw = sched.get("days") or []
-    if not isinstance(raw, list) or not raw:
-        raise ConfigError("`schedule.cadence: custom` needs a non-empty `schedule.days:` list.")
-    days = set()
-    for item in raw:
-        key = str(item).strip().lower()
-        if key not in WEEKDAY_NAMES:
-            raise ConfigError(f"`schedule.days:` has an unknown day {item!r}. Use mon…sun.")
-        days.add(WEEKDAY_NAMES[key])
-    return cadence, frozenset(days)
+def _days(value: object, where: str) -> frozenset[int]:
+    """A set of weekdays, written either as a preset name or a list of days."""
+    if isinstance(value, str):
+        key = value.strip().lower()
+        if key in DAY_PRESETS:
+            return frozenset(DAY_PRESETS[key])
+        raise ConfigError(
+            f"`{where}:` {value!r} isn't a known preset. Use one of "
+            f"{', '.join(DAY_PRESETS)}, or list the days: [mon, wed, fri]."
+        )
+    if isinstance(value, list):
+        days = set()
+        for item in value:
+            key = str(item).strip().lower()
+            if key not in WEEKDAY_NAMES:
+                raise ConfigError(f"`{where}:` has an unknown day {item!r}. Use mon…sun.")
+            days.add(WEEKDAY_NAMES[key])
+        return frozenset(days)
+    raise ConfigError(
+        f"`{where}:` must be a list of days like [mon, wed, fri], or one of "
+        f"{', '.join(DAY_PRESETS)}. Got {value!r}."
+    )
 
 
 def _validate_timezone(name: str) -> str:
@@ -221,14 +192,25 @@ def load_config(path: Path | None = None) -> Config:
         )
 
     sched_raw = _section(data, "schedule")
-    cadence, solve_days = _solve_days(sched_raw)
+    solve_days = _days(sched_raw.get("solve_days", "weekdays"), "schedule.solve_days")
+    # Left out, review days are every day you aren't solving — the shape most
+    # people want. Written explicitly (including `[]`), they're exactly that.
+    review_raw_days = sched_raw.get("review_days", None)
+    review_days = (
+        frozenset(set(range(7)) - solve_days) if review_raw_days is None
+        else _days(review_raw_days, "schedule.review_days")
+    )
+    if not solve_days and not review_days:
+        raise ConfigError(
+            "`schedule.solve_days:` and `schedule.review_days:` are both empty, "
+            "so nothing would ever fire. Give at least one of them a day."
+        )
     schedule = Schedule(
-        cadence=cadence,
         solve_days=solve_days,
+        review_days=review_days,
         problems_per_day=_int(sched_raw, "problems_per_day", 1, "schedule.", 1, 20),
         timezone=_validate_timezone(str(sched_raw.get("timezone", "UTC")).strip()),
         nag_hour=_int(sched_raw, "nag_hour", 19, "schedule.", 0, 23),
-        rest_day_review=_bool(sched_raw, "rest_day_review", True, "schedule."),
     )
 
     review_raw = _section(data, "review")
@@ -246,21 +228,6 @@ def load_config(path: Path | None = None) -> Config:
     channels_raw = _section(data, "channels")
     discord_raw = _section(channels_raw, "discord")
     email_raw = _section(channels_raw, "email")
-    sms_raw = _section(channels_raw, "sms")
-
-    sms_provider = str(sms_raw.get("provider", "carrier_gateway")).strip().lower()
-    sms_enabled = _bool(sms_raw, "enabled", False, "channels.sms.")
-    if sms_enabled and sms_provider not in SMS_PROVIDERS:
-        raise ConfigError(
-            f"`channels.sms.provider:` must be one of {', '.join(SMS_PROVIDERS)}, "
-            f"got {sms_provider!r}."
-        )
-    carrier = str(sms_raw.get("carrier", "")).strip().lower()
-    if sms_enabled and sms_provider == "carrier_gateway" and carrier not in CARRIER_GATEWAYS:
-        raise ConfigError(
-            f"`channels.sms.carrier:` {carrier!r} isn't supported. Known carriers: "
-            f"{', '.join(sorted(CARRIER_GATEWAYS))}."
-        )
 
     channels = Channels(
         discord=DiscordConfig(
@@ -271,7 +238,6 @@ def load_config(path: Path | None = None) -> Config:
             enabled=_bool(email_raw, "enabled", False, "channels.email."),
             subject_prefix=str(email_raw.get("subject_prefix", "[LeetCode]")).strip(),
         ),
-        sms=SmsConfig(enabled=sms_enabled, provider=sms_provider, carrier=carrier),
     )
     if not channels.any_enabled:
         raise ConfigError("every channel is disabled — turn on at least one under `channels:`.")
