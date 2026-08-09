@@ -3,10 +3,11 @@
 Reads your tracker tab out of Google Sheets, works out what's due today, and
 pushes a nag to whichever channels you've enabled in config.yml.
 
-    python nag.py              # respects the configured nag hour
-    python nag.py --force      # ignore the hour gate and the once-a-day lock
-    python nag.py --dry-run    # print what would be sent, send nothing
-    python nag.py --test       # send a real message even if nothing is due
+    python nag.py                # respects the configured nag hour
+    python nag.py --ignore-hour  # send whenever it runs, but once a day at most
+    python nag.py --force        # ignore the hour gate and the once-a-day lock
+    python nag.py --dry-run      # print what would be sent, send nothing
+    python nag.py --test         # send a real message even if nothing is due
 """
 
 from __future__ import annotations
@@ -30,6 +31,8 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--force", action="store_true",
                         help="ignore the nag-hour gate and the one-per-day lock")
+    parser.add_argument("--ignore-hour", action="store_true",
+                        help="ignore the nag-hour gate but keep the one-per-day lock")
     parser.add_argument("--dry-run", action="store_true",
                         help="print the message instead of sending it")
     parser.add_argument("--test", action="store_true",
@@ -58,7 +61,7 @@ def main() -> int:
 
     now = datetime.now(ZoneInfo(cfg.schedule.timezone))
     today = now.date()
-    if not force and now.hour != cfg.schedule.nag_hour:
+    if not force and not args.ignore_hour and now.hour != cfg.schedule.nag_hour:
         print(f"{now:%H:%M %Z} — nag hour is {cfg.schedule.nag_hour:02d}:00. Nothing to do.")
         return 0
 

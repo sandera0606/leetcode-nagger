@@ -1,0 +1,44 @@
+name: tests
+
+# The nag workflow can't catch its own misconfiguration: if config.yml and the
+# generated cron lines disagree, every scheduled run just skips at the gate and
+# reports success, so the nag stops silently. This is what notices.
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+# A new push supersedes an in-flight run of the same branch.
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - run: pip install -r requirements-dev.txt
+
+      # The test suite asserts this too, but a dedicated step names the fix in
+      # the log instead of burying it in a failed assertion.
+      - name: Cron lines match config.yml
+        run: python tools/sync_cron.py --check
+
+      # No secrets and no network: the suite is offline by design.
+      - run: python -m pytest tests/ -q

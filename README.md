@@ -183,9 +183,20 @@ two cold attempts are logged with that date.
 
 ### Timing
 
-`nag_hour` is in `timezone`, and daylight saving is handled for you — set
-`19` and it stays 7pm in July and in January. The workflow wakes up hourly and
-skips the 23 runs that aren't your hour.
+`nag_hour` is in `timezone` — set `19` and it stays 7pm in July and in January.
+
+Actions cron is UTC-only and can't read `config.yml`, so after changing the
+time run:
+
+```bash
+python tools/sync_cron.py
+```
+
+That rewrites the cron lines in `.github/workflows/nag.yml` — one per UTC
+offset your timezone uses, so 7pm stays 7pm through a daylight-saving change.
+Commit the result. You never work out the UTC hour yourself: zones without DST
+get a single line, and half-hour offsets like `Asia/Kolkata` keep their
+minutes.
 
 ### Reviews
 
@@ -299,9 +310,15 @@ password.
 
 ## Running it on GitHub Actions
 
-`.github/workflows/nag.yml` runs hourly and exits in about five seconds on the
-23 runs that aren't your `nag_hour`. You don't need to touch the cron line to
-change the time — that's what `config.yml` is for.
+`.github/workflows/nag.yml` has one cron line per daylight-saving season, so
+it starts twice a day. The gate step drops whichever run is in the wrong
+season in about five seconds, before Python is even installed — so you get two
+log entries a day and one nag. Zones without DST get a single line and one
+entry.
+
+Don't hand-edit the cron lines; set the time in `config.yml` and run
+`python tools/sync_cron.py`. `python tools/sync_cron.py --check` exits non-zero
+if the two have drifted apart, and a test asserts the same thing.
 
 Two things to know about scheduled Actions:
 

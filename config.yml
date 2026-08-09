@@ -27,8 +27,10 @@ schedule:
   # New cold attempts expected on each solve day.
   problems_per_day: 1
 
-  # When the nag fires. `nag_hour` is 0–23 in `timezone`, and daylight
-  # saving is handled for you.
+  # When the nag fires. `nag_hour` is 0–23 in `timezone`, and daylight saving
+  # is handled for you. After changing either, run `python tools/sync_cron.py`
+  # to update the workflow's cron lines — Actions cron is UTC-only and can't
+  # read this file.
   timezone: America/New_York
   nag_hour: 19
 
