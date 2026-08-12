@@ -4,9 +4,6 @@ A cron job that reads your LeetCode tracker out of a Google Sheet and nags you
 on Discord or by email when you're behind on new problems or on
 spaced-repetition reviews.
 
-There's no app to log into and no account to make. You fork it, paste in a few
-secrets, and edit one config file.
-
 ```
 @you
 ╭─ LeetCode Nag · Thursday, May 21 ────────────╮
@@ -30,41 +27,33 @@ secrets, and edit one config file.
 
 ## Setup
 
-Budget about 15 minutes. Most of that is making a Google service account.
+~15 minutes
 
-### 1. Fork this repo
+### 1. Fork repo
 
 The button is at the top right.
 
 ### 2. Copy a tracker sheet
 
-Open one of these and hit **File → Make a copy**. You get a copy in your own
-Drive with the problem list filled in and nothing else.
+Open one of these and hit **File → Make a copy** to make a copy of the template in your own drive.
 
 **→ [Google Sheets templates (Drive folder)](https://drive.google.com/drive/folders/1Nq8qU5llJRm0csHdbn77E94ya2Y4G1ma?usp=sharing)**
 
-| List | Problems | Good for |
+| List | Problems |
 |---|---|---|
-| Blind 75 | 75 | The classic starting point, about 3 months at 1/weekday. |
-| NeetCode 150 | 150 | Blind 75 plus the gaps it leaves. |
-| NeetCode 250 | 250 | Everything in the 150, plus 100 more. |
+| Blind 75 | 75 |
+| NeetCode 150 | 150 |
+| NeetCode 250 | 250 |
 
 All three use a tab named `Tracker`, which is what `config.yml` expects out of
 the box, so switching lists later doesn't mean reconfiguring anything.
 
-<details>
-<summary><b>Rather not touch someone else's Drive?</b></summary>
-
-`templates/` has the same sheets as `.xlsx`. Upload one to Drive and it
-converts to a Google Sheet with formatting and formulas intact. There's a `.csv`
-of each too, if you'd rather **File → Import** into a sheet you already have.
-</details>
 
 <details>
-<summary><b>Using your own sheet instead?</b> The four columns it needs</summary>
+<summary><b>Using your own sheet instead?</b> Make sure it's formatted like this: </summary>
 
-One row per problem. The bot only cares about five columns, four of which are
-required. They can be empty, but they have to exist:
+- One row per problem. 
+- 5 columns (can be empty)
 
 | Column | What it's for |
 |---|---|
@@ -74,10 +63,7 @@ required. They can be empty, but they have to exist:
 | `3wk Review` | The day you did the second review. **Required.** |
 | `Diff` | Easy/Medium/Hard. Shown in brackets. Optional. |
 
-The two review columns are how the bot knows a review is outstanding, so a
-sheet without them can't be nagged about spaced repetition at all. If one is
-missing, the bot stops on the first run and tells you which one, instead of
-silently never mentioning reviews.
+The two review columns are to make sure that the bot nags for spaced repetition.
 
 Header matching is case-insensitive and fuzzy, so `Cold attempt`,
 `First review` and `1 week review` all work. Dates can be `2026-05-20`,
@@ -88,12 +74,9 @@ the confidence dropdown, the dashboard at the top) is there for you rather than
 for the bot, which scrolls past all of it looking for the header row.
 </details>
 
-### 3. Let the bot read the sheet
+### 3. The bot reads the sheet via a google service account
 
-It reads through a service account, so you never hand it your Google password.
-
-<details>
-<summary><b>Creating the service account</b> (the fiddly part, about 5 minutes)</summary>
+<summary><b>Creating the service account</b> (~5 minutes)</summary>
 
 1. In [Google Cloud Console](https://console.cloud.google.com), create (or
    pick) a project, then **enable the Google Sheets API** on it.
@@ -118,12 +101,9 @@ It reads through a service account, so you never hand it your Google password.
    (`something@your-project.iam.gserviceaccount.com`), then in your sheet click
    **Share**, paste it, and give it **Viewer**. Skip this and you'll get a 403,
    since the key by itself doesn't grant access to your sheet.
-</details>
 
-### 4. Pick your channels
 
-Discord, email, or both. Each one sends independently, so a wrong Gmail
-password won't cost you the Discord ping.
+### 4. Pick your channel(s)
 
 <details>
 <summary><b>Discord</b> (the one that reliably reaches your phone)</summary>
@@ -183,7 +163,7 @@ due, nothing is sent.
 
 ---
 
-## Configuring it
+## Configuration
 
 `config.yml` is the file you edit. It covers behaviour only. Nothing in it is
 secret or identifies you, so it's safe to commit in a public fork.
